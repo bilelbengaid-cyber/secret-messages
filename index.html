@@ -17,7 +17,7 @@ body{
   text-align:center;
 }
 
-/* الفورم الكبيرة */
+/* الفورميلار */
 .form{
   background:white;
   color:black;
@@ -26,6 +26,7 @@ body{
   padding:30px;
   border-radius:20px;
 }
+
 input,select,textarea{
   width:100%;
   padding:12px;
@@ -33,6 +34,7 @@ input,select,textarea{
   border-radius:10px;
   border:1px solid #ccc;
 }
+
 button{
   width:100%;
   padding:12px;
@@ -41,6 +43,19 @@ button{
   background:#ff2e63;
   color:white;
   font-size:16px;
+  margin-top:10px;
+  cursor:pointer;
+}
+
+/* صندوق الرابط */
+#linkBox{
+  display:none;
+  background:#eee;
+  color:black;
+  padding:10px;
+  border-radius:10px;
+  margin-top:10px;
+  word-break:break-all;
 }
 
 /* اللعبة */
@@ -50,10 +65,6 @@ button{
   position:absolute;
   font-size:30px;
   cursor:pointer;
-}
-
-#info{
-  margin-top:10px;
 }
 
 /* النهاية */
@@ -74,7 +85,7 @@ button{
 
 <body>
 
-<!-- فورميلار كبيرة -->
+<!-- الفورميلار الكبيرة -->
 <div class="form" id="form">
 <h2>💖 Secret Love</h2>
 
@@ -94,6 +105,11 @@ button{
 <textarea id="msg" placeholder="اكتب رسالة رومانسية 💌"></textarea>
 
 <button onclick="start()">🔥 ابدأ التحدي</button>
+
+<!-- 🔥 هنا يظهر الرابط -->
+<div id="linkBox"></div>
+<button id="copyBtn" onclick="copyLink()" style="display:none;">📋 نسخ الرابط</button>
+
 </div>
 
 <!-- اللعبة -->
@@ -121,6 +137,7 @@ let level=1;
 let time=10;
 let savedMessage="";
 let timer;
+let finalLink="";
 
 // البداية
 function start(){
@@ -128,22 +145,37 @@ function start(){
   let u=document.getElementById("username").value;
   let m=document.getElementById("msg").value;
 
-  if(u==""||m==""){alert("عمر الخانات");return;}
+  if(u==""||m==""){
+    alert("عمر الخانات");
+    return;
+  }
 
   db.collection("messages").add({
     user:u,
     text:m
   }).then(docRef=>{
-    let link=window.location.href.split("?")[0]+"?msg="+docRef.id;
-    alert("🔗 ابعث الرابط:\n"+link);
+
+    finalLink = window.location.href.split("?")[0] + "?msg=" + docRef.id;
+
+    // 🔥 عرض الرابط بدل alert
+    document.getElementById("linkBox").style.display="block";
+    document.getElementById("copyBtn").style.display="block";
+    document.getElementById("linkBox").innerText = finalLink;
+
   });
 
-  savedMessage=m;
+  savedMessage = m;
 
   document.getElementById("form").style.display="none";
   document.getElementById("game").style.display="block";
 
   startLevel();
+}
+
+// نسخ الرابط
+function copyLink(){
+  navigator.clipboard.writeText(finalLink);
+  alert("✅ تم نسخ الرابط!");
 }
 
 // كل مرحلة
@@ -169,7 +201,7 @@ function startLevel(){
   spawnItems();
 }
 
-// توليد عناصر
+// عناصر اللعبة
 function spawnItems(){
 
   let speed = 800 - (level*100);
@@ -277,5 +309,4 @@ window.onload = async function(){
 
 </body>
 </html>
- 
  
