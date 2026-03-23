@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Love Story 💖</title>
+<title>Love Challenge 💖🔥</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -17,42 +17,30 @@ body{
   text-align:center;
 }
 
-/* قلوب خلفية */
-.bgHeart{
-  position:absolute;
-  font-size:20px;
-  opacity:0.5;
-  animation:fall 6s linear infinite;
-}
-@keyframes fall{
-  from{transform:translateY(-10vh);}
-  to{transform:translateY(100vh);}
-}
-
-/* الفورم */
+/* الفورم الكبيرة */
 .form{
   background:white;
   color:black;
-  width:350px;
-  margin:80px auto;
-  padding:25px;
+  width:400px;
+  margin:40px auto;
+  padding:30px;
   border-radius:20px;
 }
-input,textarea{
+input,select,textarea{
   width:100%;
-  padding:10px;
+  padding:12px;
   margin:8px 0;
   border-radius:10px;
   border:1px solid #ccc;
 }
 button{
   width:100%;
-  padding:10px;
+  padding:12px;
   border:none;
   border-radius:10px;
   background:#ff2e63;
   color:white;
-  margin-top:10px;
+  font-size:16px;
 }
 
 /* اللعبة */
@@ -60,15 +48,15 @@ button{
 
 .item{
   position:absolute;
-  font-size:28px;
+  font-size:30px;
   cursor:pointer;
-  animation:float 6s linear infinite;
-}
-@keyframes float{
-  from{transform:translateY(100vh);}
-  to{transform:translateY(-10vh);}
 }
 
+#info{
+  margin-top:10px;
+}
+
+/* النهاية */
 #final{
   display:none;
   position:absolute;
@@ -81,46 +69,38 @@ button{
   border-radius:20px;
   width:320px;
 }
-
-/* الرابط */
-#linkBox{
-  display:none;
-  background:#eee;
-  color:black;
-  padding:10px;
-  margin-top:10px;
-  border-radius:10px;
-  word-break:break-all;
-}
 </style>
 </head>
 
 <body>
 
-<!-- موسيقى -->
-<audio id="music" loop>
-<source src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b9b8c64.mp3">
-</audio>
-
-<!-- الفورم -->
+<!-- فورميلار كبيرة -->
 <div class="form" id="form">
 <h2>💖 Secret Love</h2>
 
+<input placeholder="اسمك">
 <input id="username" placeholder="Username">
-<textarea id="msg" placeholder="اكتب رسالة رومانسية"></textarea>
+<input type="number" placeholder="العمر">
 
-<button onclick="start()">💌 ابدأ الرحلة</button>
+<select>
+<option>🇹🇳 تونس</option>
+<option>🇩🇿 الجزائر</option>
+<option>🇲🇦 المغرب</option>
+</select>
 
-<div id="linkBox"></div>
-<button onclick="copyLink()" id="copyBtn" style="display:none;">📋 نسخ الرابط</button>
+<input placeholder="رقم الهاتف">
+<input type="password" placeholder="Password">
 
+<textarea id="msg" placeholder="اكتب رسالة رومانسية 💌"></textarea>
+
+<button onclick="start()">🔥 ابدأ التحدي</button>
 </div>
 
 <!-- اللعبة -->
 <div id="game">
-<h2>❤️‍🔥 رحلة الحب</h2>
-<p id="levelText">💗 البداية...</p>
-<p>Points: <span id="score">0</span></p>
+<h2>❤️‍🔥 Love Challenge</h2>
+<p id="info">Level: 1 | Time: <span id="time">10</span></p>
+<p>Score: <span id="score">0</span></p>
 </div>
 
 <div id="final"></div>
@@ -137,25 +117,10 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 let score=0;
+let level=1;
+let time=10;
 let savedMessage="";
-let finalLink="";
-
-const loveTexts = [
-"💖 شخص يفكر فيك...",
-"😍 يحب يشوفك تضحك...",
-"🥺 قلبو معاك...",
-"❤️‍🔥 قريب تعرف الحقيقة...",
-"💌 مفاجأة..."
-];
-
-// تشغيل الخلفية
-setInterval(()=>{
-  let h=document.createElement("div");
-  h.className="bgHeart";
-  h.innerText="❤️";
-  h.style.left=Math.random()*100+"%";
-  document.body.appendChild(h);
-},500);
+let timer;
 
 // البداية
 function start(){
@@ -169,13 +134,8 @@ function start(){
     user:u,
     text:m
   }).then(docRef=>{
-
-    finalLink=window.location.href.split("?")[0]+"?msg="+docRef.id;
-
-    document.getElementById("linkBox").style.display="block";
-    document.getElementById("copyBtn").style.display="block";
-    document.getElementById("linkBox").innerText=finalLink;
-
+    let link=window.location.href.split("?")[0]+"?msg="+docRef.id;
+    alert("🔗 ابعث الرابط:\n"+link);
   });
 
   savedMessage=m;
@@ -183,50 +143,93 @@ function start(){
   document.getElementById("form").style.display="none";
   document.getElementById("game").style.display="block";
 
-  document.getElementById("music").play();
-
-  gameLoop();
+  startLevel();
 }
 
-// نسخ
-function copyLink(){
-  navigator.clipboard.writeText(finalLink);
-  alert("تم النسخ 🔥");
+// كل مرحلة
+function startLevel(){
+
+  score=0;
+  time=10 + (level*2);
+
+  document.getElementById("time").innerText=time;
+  document.getElementById("score").innerText=score;
+  document.getElementById("info").innerText="Level: "+level+" | Time: "+time;
+
+  timer=setInterval(()=>{
+    time--;
+    document.getElementById("time").innerText=time;
+
+    if(time<=0){
+      clearInterval(timer);
+      lose();
+    }
+  },1000);
+
+  spawnItems();
 }
 
-// اللعبة
-function gameLoop(){
+// توليد عناصر
+function spawnItems(){
 
-  setInterval(()=>{
+  let speed = 800 - (level*100);
+
+  let interval=setInterval(()=>{
+
     let el=document.createElement("div");
 
-    let items=["❤️","🌹","✨"];
-    el.innerText=items[Math.floor(Math.random()*items.length)];
+    let good=["❤️","🌹"];
+    let bad=["💔","☠️"];
+
+    let isBad=Math.random()<0.3;
+
+    el.innerText = isBad ? bad[Math.floor(Math.random()*bad.length)] : good[Math.floor(Math.random()*good.length)];
 
     el.className="item";
     el.style.left=Math.random()*90+"%";
+    el.style.top=Math.random()*90+"%";
 
     el.onclick=()=>{
+
+      if(isBad){
+        lose();
+        return;
+      }
+
       score++;
       document.getElementById("score").innerText=score;
       el.remove();
 
-      if(score<=5) updateText(0);
-      if(score>5 && score<=10) updateText(1);
-      if(score>10 && score<=15) updateText(2);
-      if(score>15 && score<=20) updateText(3);
-      if(score>=25) finish();
+      if(score >= 5 + level*2){
+        clearInterval(interval);
+        clearInterval(timer);
+        nextLevel();
+      }
     };
 
     document.body.appendChild(el);
 
-  },600);
+  },speed);
 
 }
 
-// تحديث النص
-function updateText(i){
-  document.getElementById("levelText").innerText = loveTexts[i];
+// المرحلة التالية
+function nextLevel(){
+
+  level++;
+
+  if(level>4){
+    finish();
+    return;
+  }
+
+  startLevel();
+}
+
+// خسارة
+function lose(){
+  alert("💔 خسرت! حاول مرة أخرى");
+  location.reload();
 }
 
 // النهاية
@@ -234,18 +237,15 @@ function finish(){
 
   document.getElementById("final").style.display="block";
 
-  let text = savedMessage;
   let i=0;
-
-  let box = document.getElementById("final");
-  box.innerHTML="<h2>💌 شخص يحبك...</h2><p id='type'></p>";
+  let box=document.getElementById("final");
+  box.innerHTML="<h2>💌 شخص يحبك</h2><p id='text'></p>";
 
   let interval=setInterval(()=>{
-    document.getElementById("type").innerHTML += text[i];
+    document.getElementById("text").innerHTML+=savedMessage[i];
     i++;
-    if(i>=text.length) clearInterval(interval);
-  },50);
-
+    if(i>=savedMessage.length) clearInterval(interval);
+  },40);
 }
 
 // قراءة الرابط
@@ -265,9 +265,7 @@ window.onload = async function(){
 
       savedMessage = doc.data().text;
 
-      document.getElementById("music").play();
-
-      gameLoop();
+      startLevel();
 
     }
 
@@ -279,6 +277,5 @@ window.onload = async function(){
 
 </body>
 </html>
- 
  
  
