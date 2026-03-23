@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Secret Messages PRO</title>
+<title>Love Story 💖</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -11,44 +11,85 @@
 body{
   margin:0;
   font-family:sans-serif;
-  background:linear-gradient(135deg,#1f1c2c,#928dab);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
+  background:linear-gradient(135deg,#ff758c,#ff7eb3);
+  overflow:hidden;
+  color:white;
+  text-align:center;
 }
+
+/* قلوب خلفية */
+.bgHeart{
+  position:absolute;
+  font-size:20px;
+  opacity:0.5;
+  animation:fall 6s linear infinite;
+}
+@keyframes fall{
+  from{transform:translateY(-10vh);}
+  to{transform:translateY(100vh);}
+}
+
+/* الفورم */
 .form{
   background:white;
-  width:380px;
-  padding:30px;
+  color:black;
+  width:350px;
+  margin:80px auto;
+  padding:25px;
   border-radius:20px;
-  box-shadow:0 10px 40px rgba(0,0,0,0.4);
-  text-align:center;
 }
 input,textarea{
   width:100%;
-  padding:12px;
+  padding:10px;
   margin:8px 0;
   border-radius:10px;
-  border:1px solid #ddd;
+  border:1px solid #ccc;
 }
 button{
   width:100%;
-  padding:12px;
+  padding:10px;
   border:none;
   border-radius:10px;
   background:#ff2e63;
   color:white;
-  font-size:16px;
-  cursor:pointer;
   margin-top:10px;
 }
-#resultLink{
+
+/* اللعبة */
+#game{display:none;}
+
+.item{
+  position:absolute;
+  font-size:28px;
+  cursor:pointer;
+  animation:float 6s linear infinite;
+}
+@keyframes float{
+  from{transform:translateY(100vh);}
+  to{transform:translateY(-10vh);}
+}
+
+#final{
+  display:none;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:white;
+  color:black;
+  padding:30px;
+  border-radius:20px;
+  width:320px;
+}
+
+/* الرابط */
+#linkBox{
   display:none;
   background:#eee;
+  color:black;
   padding:10px;
-  border-radius:10px;
   margin-top:10px;
+  border-radius:10px;
   word-break:break-all;
 }
 </style>
@@ -56,93 +97,178 @@ button{
 
 <body>
 
+<!-- موسيقى -->
+<audio id="music" loop>
+<source src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b9b8c64.mp3">
+</audio>
+
+<!-- الفورم -->
 <div class="form" id="form">
-<h2>🔥 Secret Messages</h2>
+<h2>💖 Secret Love</h2>
 
-<input id="name" placeholder="اسمك">
 <input id="username" placeholder="Username">
-<input id="password" type="password" placeholder="Password">
+<textarea id="msg" placeholder="اكتب رسالة رومانسية"></textarea>
 
-<textarea id="msg" placeholder="اكتب رسالتك"></textarea>
+<button onclick="start()">💌 ابدأ الرحلة</button>
 
-<button onclick="sendMsg()">📤 إرسال</button>
-
-<div id="resultLink"></div>
+<div id="linkBox"></div>
 <button onclick="copyLink()" id="copyBtn" style="display:none;">📋 نسخ الرابط</button>
 
 </div>
 
+<!-- اللعبة -->
+<div id="game">
+<h2>❤️‍🔥 رحلة الحب</h2>
+<p id="levelText">💗 البداية...</p>
+<p>Points: <span id="score">0</span></p>
+</div>
+
+<div id="final"></div>
+
 <script>
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAtzAi4uskhYAMnS5jUFXnoqymCMuUYvn4",
+  apiKey: "AIzaSy...",
   authDomain: "secret-messages-d0ac8.firebaseapp.com",
-  projectId: "secret-messages-d0ac8",
+  projectId: "secret-messages-d0ac8"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// إرسال رسالة
-function sendMsg(){
+let score=0;
+let savedMessage="";
+let finalLink="";
 
-  let username = document.getElementById("username").value;
-  let message = document.getElementById("msg").value;
+const loveTexts = [
+"💖 شخص يفكر فيك...",
+"😍 يحب يشوفك تضحك...",
+"🥺 قلبو معاك...",
+"❤️‍🔥 قريب تعرف الحقيقة...",
+"💌 مفاجأة..."
+];
 
-  if(username=="" || message==""){
-    alert("عمر الخانات");
-    return;
-  }
+// تشغيل الخلفية
+setInterval(()=>{
+  let h=document.createElement("div");
+  h.className="bgHeart";
+  h.innerText="❤️";
+  h.style.left=Math.random()*100+"%";
+  document.body.appendChild(h);
+},500);
+
+// البداية
+function start(){
+
+  let u=document.getElementById("username").value;
+  let m=document.getElementById("msg").value;
+
+  if(u==""||m==""){alert("عمر الخانات");return;}
 
   db.collection("messages").add({
-    user: username,
-    text: message
-  }).then((docRef)=>{
+    user:u,
+    text:m
+  }).then(docRef=>{
 
-    let link = window.location.href.split("?")[0] + "?msg=" + docRef.id;
+    finalLink=window.location.href.split("?")[0]+"?msg="+docRef.id;
 
-    // عرض الرابط في الصفحة
-    document.getElementById("resultLink").style.display="block";
+    document.getElementById("linkBox").style.display="block";
     document.getElementById("copyBtn").style.display="block";
-
-    document.getElementById("resultLink").innerText = link;
+    document.getElementById("linkBox").innerText=finalLink;
 
   });
 
+  savedMessage=m;
+
+  document.getElementById("form").style.display="none";
+  document.getElementById("game").style.display="block";
+
+  document.getElementById("music").play();
+
+  gameLoop();
 }
 
-// نسخ الرابط
+// نسخ
 function copyLink(){
-  let text = document.getElementById("resultLink").innerText;
-  navigator.clipboard.writeText(text);
+  navigator.clipboard.writeText(finalLink);
   alert("تم النسخ 🔥");
 }
 
-// قراءة الرسالة من الرابط
-window.onload = async function() {
+// اللعبة
+function gameLoop(){
+
+  setInterval(()=>{
+    let el=document.createElement("div");
+
+    let items=["❤️","🌹","✨"];
+    el.innerText=items[Math.floor(Math.random()*items.length)];
+
+    el.className="item";
+    el.style.left=Math.random()*90+"%";
+
+    el.onclick=()=>{
+      score++;
+      document.getElementById("score").innerText=score;
+      el.remove();
+
+      if(score<=5) updateText(0);
+      if(score>5 && score<=10) updateText(1);
+      if(score>10 && score<=15) updateText(2);
+      if(score>15 && score<=20) updateText(3);
+      if(score>=25) finish();
+    };
+
+    document.body.appendChild(el);
+
+  },600);
+
+}
+
+// تحديث النص
+function updateText(i){
+  document.getElementById("levelText").innerText = loveTexts[i];
+}
+
+// النهاية
+function finish(){
+
+  document.getElementById("final").style.display="block";
+
+  let text = savedMessage;
+  let i=0;
+
+  let box = document.getElementById("final");
+  box.innerHTML="<h2>💌 شخص يحبك...</h2><p id='type'></p>";
+
+  let interval=setInterval(()=>{
+    document.getElementById("type").innerHTML += text[i];
+    i++;
+    if(i>=text.length) clearInterval(interval);
+  },50);
+
+}
+
+// قراءة الرابط
+window.onload = async function(){
 
   const params = new URLSearchParams(window.location.search);
   const msgId = params.get("msg");
 
   if(msgId){
 
-    document.body.innerHTML = "⏳ جاري تحميل...";
-
     let doc = await db.collection("messages").doc(msgId).get();
 
     if(doc.exists){
 
-      document.body.innerHTML = `
-        <div style="text-align:center;color:white;margin-top:100px;">
-          <h1>💌 رسالة</h1>
-          <div style="background:#222;padding:20px;border-radius:20px;">
-            ${doc.data().text}
-          </div>
-        </div>
-      `;
+      document.getElementById("form").style.display="none";
+      document.getElementById("game").style.display="block";
 
-    } else {
-      document.body.innerHTML = "<h2 style='color:white'>❌ الرسالة غير موجودة</h2>";
+      savedMessage = doc.data().text;
+
+      document.getElementById("music").play();
+
+      gameLoop();
+
     }
 
   }
