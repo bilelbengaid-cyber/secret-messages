@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Love Challenge 💖🔥</title>
+<title>Love Challenge PRO 💖🔥</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -11,25 +11,23 @@
 body{
   margin:0;
   font-family:sans-serif;
-  background:linear-gradient(135deg,#ff758c,#ff7eb3);
-  color:white;
+  background:linear-gradient(135deg,#ff4e8a,#ff9a9e);
   text-align:center;
 }
 
-/* الفورم */
 .form{
   background:white;
-  color:black;
-  width:400px;
-  margin:40px auto;
-  padding:30px;
+  width:420px;
+  margin:20px auto;
+  padding:25px;
   border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
 }
 
 input,select,textarea{
   width:100%;
   padding:12px;
-  margin:8px 0;
+  margin:6px 0;
   border-radius:10px;
   border:1px solid #ccc;
 }
@@ -48,7 +46,6 @@ button{
 #linkBox{
   display:none;
   background:#eee;
-  color:black;
   padding:10px;
   border-radius:10px;
   word-break:break-all;
@@ -73,10 +70,9 @@ button{
   left:50%;
   transform:translate(-50%,-50%);
   background:white;
-  color:black;
-  padding:30px;
+  padding:25px;
   border-radius:20px;
-  width:320px;
+  width:300px;
 }
 </style>
 </head>
@@ -84,57 +80,81 @@ button{
 <body>
 
 <div class="form" id="form">
-<h2>💖 Secret Love</h2>
+<h2>💖 Secret Love PRO</h2>
 
-<input placeholder="اسمك">
+<input placeholder="Your Name">
 <input id="username" placeholder="Username">
-<textarea id="msg" placeholder="اكتب رسالة 💌"></textarea>
+<input type="number" placeholder="Age">
 
-<button onclick="start()">🔥 إنشاء الرابط</button>
+<select>
+<option>Tunisia 🇹🇳</option>
+<option>Algeria 🇩🇿</option>
+<option>Morocco 🇲🇦</option>
+<option>Other 🌍</option>
+</select>
+
+<input placeholder="Phone Number">
+<input type="password" placeholder="Password">
+
+<textarea id="msg" placeholder="Write a romantic message 💌"></textarea>
+
+<button onclick="start()">🔥 Generate Link</button>
 
 <div id="linkBox"></div>
 
-<button id="copyBtn" onclick="copyLink()">📋 نسخ الرابط</button>
-<button id="startGameBtn" onclick="goGame()">🎮 ابدأ اللعبة</button>
-
+<button id="copyBtn" onclick="copyLink()">📋 Copy Link</button>
+<button id="startGameBtn" onclick="goGame()">🎮 Start Game</button>
 </div>
 
 <div id="game">
 <h2>❤️‍🔥 Love Challenge</h2>
-<p id="info">Level: 1 | Time: <span id="time">10</span></p>
+<p id="info"></p>
 <p>Score: <span id="score">0</span></p>
 </div>
 
 <div id="final"></div>
 
+<audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+
 <script>
 
-// 🔥 حط CONFIG متاعك الصحيح هنا
 const firebaseConfig = {
-  apiKey: "🔥 حط apiKey الصحيح",
+  apiKey: "AIzaSyAtzAi4uskhYAMnS5jUFXnoqymCMuUYvn4",
   authDomain: "secret-messages-d0ac8.firebaseapp.com",
-  projectId: "secret-messages-d0ac8"
+  projectId: "secret-messages-d0ac8",
+  storageBucket: "secret-messages-d0ac8.firebasestorage.app",
+  messagingSenderId: "935100819831",
+  appId: "1:935100819831:web:816401da39cff6a1f65972",
+  measurementId: "G-RZD6N5MMJ7"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 let finalLink="";
+let savedMessage="";
 let score=0;
 let level=1;
 let time=10;
-let savedMessage="";
-let timer;
-let spawnInterval;
+let timer,spawnInterval;
 
-// إنشاء الرابط
+function playSound(){
+  document.getElementById("clickSound").play();
+}
+
+function vibrate(){
+  if(navigator.vibrate){
+    navigator.vibrate(100);
+  }
+}
+
 function start(){
 
   let u=document.getElementById("username").value;
   let m=document.getElementById("msg").value;
 
   if(u==""||m==""){
-    alert("عمر الخانات");
+    alert("Please fill all fields");
     return;
   }
 
@@ -143,44 +163,38 @@ function start(){
     text:m
   }).then(docRef=>{
 
-    finalLink = window.location.href.split("?")[0] + "?msg=" + docRef.id;
+    finalLink = location.href.split("?")[0]+"?msg="+docRef.id;
 
     document.getElementById("linkBox").style.display="block";
     document.getElementById("copyBtn").style.display="block";
     document.getElementById("startGameBtn").style.display="block";
 
-    document.getElementById("linkBox").innerText = finalLink;
-
+    document.getElementById("linkBox").innerText=finalLink;
   });
 
 }
 
-// نسخ الرابط
 function copyLink(){
   navigator.clipboard.writeText(finalLink);
-  alert("✅ تم نسخ الرابط");
+  alert("Link copied 🔥");
 }
 
-// بدء اللعبة
 function goGame(){
   document.getElementById("form").style.display="none";
   document.getElementById("game").style.display="block";
   startLevel();
 }
 
-// المراحل
 function startLevel(){
 
   score=0;
-  time=10 + level*2;
+  time=10+level*2;
 
-  document.getElementById("score").innerText=score;
-  document.getElementById("time").innerText=time;
-  document.getElementById("info").innerText="Level: "+level+" | Time: "+time;
+  document.getElementById("info").innerText="Level "+level+" | Time "+time;
 
   timer=setInterval(()=>{
     time--;
-    document.getElementById("time").innerText=time;
+    document.getElementById("info").innerText="Level "+level+" | Time "+time;
 
     if(time<=0){
       clearAll();
@@ -191,10 +205,7 @@ function startLevel(){
   spawn();
 }
 
-// العناصر
 function spawn(){
-
-  let speed = 800 - level*100;
 
   spawnInterval=setInterval(()=>{
 
@@ -205,13 +216,16 @@ function spawn(){
 
     let isBad=Math.random()<0.3;
 
-    el.innerText = isBad ? bad[Math.floor(Math.random()*bad.length)] : good[Math.floor(Math.random()*good.length)];
+    el.innerText=isBad ? bad[Math.floor(Math.random()*bad.length)] : good[Math.floor(Math.random()*good.length)];
 
     el.className="item";
     el.style.left=Math.random()*90+"%";
     el.style.top=Math.random()*90+"%";
 
     el.onclick=()=>{
+
+      playSound();
+      vibrate();
 
       if(isBad){
         clearAll();
@@ -223,7 +237,7 @@ function spawn(){
       document.getElementById("score").innerText=score;
       el.remove();
 
-      if(score >= 5 + level*2){
+      if(score>=5+level*2){
         clearAll();
         nextLevel();
       }
@@ -233,17 +247,15 @@ function spawn(){
 
     setTimeout(()=>el.remove(),3000);
 
-  },speed);
+  },600);
 
 }
 
-// تنظيف
 function clearAll(){
   clearInterval(timer);
   clearInterval(spawnInterval);
 }
 
-// المرحلة التالية
 function nextLevel(){
   level++;
   if(level>4){
@@ -253,52 +265,44 @@ function nextLevel(){
   startLevel();
 }
 
-// خسارة
 function lose(){
-  alert("💔 خسرت!");
+  alert("💔 You lost!");
   location.reload();
 }
 
-// النهاية
 function finish(){
 
   document.getElementById("final").style.display="block";
 
   let i=0;
-  let text=savedMessage;
   let box=document.getElementById("final");
 
-  box.innerHTML="<h2>💌 رسالة سرية</h2><p id='t'></p>";
+  box.innerHTML="<h2>💌 Secret Message</h2><p id='t'></p>";
 
   let interval=setInterval(()=>{
-    document.getElementById("t").innerHTML+=text[i];
+    document.getElementById("t").innerHTML+=savedMessage[i];
     i++;
-    if(i>=text.length) clearInterval(interval);
+    if(i>=savedMessage.length) clearInterval(interval);
   },40);
 }
 
-// قراءة الرابط (🔥 تم إصلاحها)
 window.onload = async function(){
 
-  const params = new URLSearchParams(window.location.search);
-  const msgId = params.get("msg");
+  const params=new URLSearchParams(location.search);
+  const id=params.get("msg");
 
-  if(msgId){
+  if(id){
 
     document.getElementById("form").style.display="none";
     document.getElementById("game").style.display="block";
 
-    let doc = await db.collection("messages").doc(msgId).get();
+    let doc=await db.collection("messages").doc(id).get();
 
     if(doc.exists){
-      savedMessage = doc.data().text;
-
-      setTimeout(()=>{
-        startLevel();
-      },500);
-
+      savedMessage=doc.data().text;
+      setTimeout(()=>startLevel(),500);
     }else{
-      alert("❌ الرسالة غير موجودة");
+      alert("Message not found ❌");
     }
 
   }
