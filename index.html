@@ -16,6 +16,7 @@ body{
   text-align:center;
 }
 
+/* الفورم */
 .form{
   background:white;
   color:black;
@@ -82,24 +83,12 @@ button{
 
 <body>
 
-<!-- الفورميلار -->
 <div class="form" id="form">
 <h2>💖 Secret Love</h2>
 
 <input placeholder="اسمك">
 <input id="username" placeholder="Username">
-<input type="number" placeholder="العمر">
-
-<select>
-<option>🇹🇳 تونس</option>
-<option>🇩🇿 الجزائر</option>
-<option>🇲🇦 المغرب</option>
-</select>
-
-<input placeholder="رقم الهاتف">
-<input type="password" placeholder="Password">
-
-<textarea id="msg" placeholder="اكتب رسالة رومانسية 💌"></textarea>
+<textarea id="msg" placeholder="اكتب رسالة 💌"></textarea>
 
 <button onclick="start()">🔥 إنشاء الرابط</button>
 
@@ -110,7 +99,6 @@ button{
 
 </div>
 
-<!-- اللعبة -->
 <div id="game">
 <h2>❤️‍🔥 Love Challenge</h2>
 <p id="info">Level: 1 | Time: <span id="time">10</span></p>
@@ -121,8 +109,9 @@ button{
 
 <script>
 
+// 🔥 حط CONFIG متاعك الصحيح هنا
 const firebaseConfig = {
-  apiKey: "AIzaSy...",
+  apiKey: "🔥 حط apiKey الصحيح",
   authDomain: "secret-messages-d0ac8.firebaseapp.com",
   projectId: "secret-messages-d0ac8"
 };
@@ -136,6 +125,7 @@ let level=1;
 let time=10;
 let savedMessage="";
 let timer;
+let spawnInterval;
 
 // إنشاء الرابط
 function start(){
@@ -173,10 +163,8 @@ function copyLink(){
 
 // بدء اللعبة
 function goGame(){
-
   document.getElementById("form").style.display="none";
   document.getElementById("game").style.display="block";
-
   startLevel();
 }
 
@@ -195,7 +183,7 @@ function startLevel(){
     document.getElementById("time").innerText=time;
 
     if(time<=0){
-      clearInterval(timer);
+      clearAll();
       lose();
     }
   },1000);
@@ -208,7 +196,7 @@ function spawn(){
 
   let speed = 800 - level*100;
 
-  let interval=setInterval(()=>{
+  spawnInterval=setInterval(()=>{
 
     let el=document.createElement("div");
 
@@ -226,6 +214,7 @@ function spawn(){
     el.onclick=()=>{
 
       if(isBad){
+        clearAll();
         lose();
         return;
       }
@@ -235,16 +224,23 @@ function spawn(){
       el.remove();
 
       if(score >= 5 + level*2){
-        clearInterval(interval);
-        clearInterval(timer);
+        clearAll();
         nextLevel();
       }
     };
 
     document.body.appendChild(el);
 
+    setTimeout(()=>el.remove(),3000);
+
   },speed);
 
+}
+
+// تنظيف
+function clearAll(){
+  clearInterval(timer);
+  clearInterval(spawnInterval);
 }
 
 // المرحلة التالية
@@ -281,7 +277,7 @@ function finish(){
   },40);
 }
 
-// قراءة الرابط
+// قراءة الرابط (🔥 تم إصلاحها)
 window.onload = async function(){
 
   const params = new URLSearchParams(window.location.search);
@@ -289,17 +285,20 @@ window.onload = async function(){
 
   if(msgId){
 
+    document.getElementById("form").style.display="none";
+    document.getElementById("game").style.display="block";
+
     let doc = await db.collection("messages").doc(msgId).get();
 
     if(doc.exists){
-
-      document.getElementById("form").style.display="none";
-      document.getElementById("game").style.display="block";
-
       savedMessage = doc.data().text;
 
-      startLevel();
+      setTimeout(()=>{
+        startLevel();
+      },500);
 
+    }else{
+      alert("❌ الرسالة غير موجودة");
     }
 
   }
