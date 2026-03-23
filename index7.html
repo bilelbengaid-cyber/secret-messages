@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Secret Messages PRO</title>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<style>
+body{
+  margin:0;
+  font-family:sans-serif;
+  background:linear-gradient(135deg,#1f1c2c,#928dab);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.form{
+  background:white;
+  width:380px;
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 10px 40px rgba(0,0,0,0.4);
+  text-align:center;
+}
+
+input,select,textarea{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border-radius:10px;
+  border:1px solid #ddd;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#ff2e63;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+  margin-top:10px;
+}
+
+.link{
+  background:#f3f3f3;
+  padding:10px;
+  border-radius:10px;
+  word-break:break-all;
+}
+
+#result,#sendPage,#inbox{
+  display:none;
+}
+</style>
+</head>
+
+<body>
+
+<!-- FORM -->
+<div class="form" id="form">
+<h2>🔥 Secret Messages</h2>
+
+<input id="name" placeholder="اسمك">
+<input id="username" placeholder="Username">
+<input id="age" type="number" placeholder="العمر">
+
+<select id="country">
+<option value="">اختر بلدك</option>
+<option>🇹🇳 تونس</option>
+<option>🇩🇿 الجزائر</option>
+<option>🇲🇦 المغرب</option>
+<option>🌍 أخرى</option>
+</select>
+
+<input id="phone" placeholder="رقم الهاتف (اختياري)">
+<input type="password" placeholder="Password">
+
+<textarea id="bio" placeholder="اكتب رسالة ترحيب"></textarea>
+
+<button onclick="create()">🚀 إنشاء الرابط</button>
+</div>
+
+<!-- RESULT -->
+<div class="form" id="result">
+<h3>🔗 رابطك</h3>
+<p class="link" id="link"></p>
+
+<button onclick="copy()">📋 نسخ الرابط</button>
+<button onclick="openInbox()">📥 رسائلي</button>
+</div>
+
+<!-- SEND MESSAGE -->
+<div class="form" id="sendPage">
+<h3>💌 أرسل رسالة مجهولة</h3>
+<textarea id="msg"></textarea>
+<button onclick="sendMsg()">📤 إرسال</button>
+</div>
+
+<!-- INBOX -->
+<div class="form" id="inbox">
+<h3>📥 الرسائل</h3>
+<div id="messages"></div>
+</div>
+
+<script>
+
+// 🔥 حط config متاعك هنا
+  const firebaseConfig = {
+    apiKey: "AIzaSyAtzAi4uskhYAMnS5jUFXnoqymCMuUYvn4",
+    authDomain: "secret-messages-d0ac8.firebaseapp.com",
+    projectId: "secret-messages-d0ac8",
+    storageBucket: "secret-messages-d0ac8.firebasestorage.app",
+    messagingSenderId: "935100819831",
+    appId: "1:935100819831:web:38eb20e45582c307f65972",
+    measurementId: "G-4HY0CJYHJD"
+  };
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+let urlParams = new URLSearchParams(window.location.search);
+let user = urlParams.get("user");
+
+// إذا دخل برابط → يبعث رسالة
+if(user){
+  document.getElementById("form").style.display="none";
+  document.getElementById("sendPage").style.display="block";
+}
+
+// إنشاء رابط
+function create(){
+  let u=document.getElementById("username").value;
+
+  if(u==""){alert("اكتب username");return;}
+
+  let link=window.location.href.split("?")[0]+"?user="+u;
+
+  document.getElementById("form").style.display="none";
+  document.getElementById("result").style.display="block";
+
+  document.getElementById("link").innerText=link;
+}
+
+// نسخ
+function copy(){
+  let text=document.getElementById("link").innerText;
+  navigator.clipboard.writeText(text);
+  alert("تم النسخ 🔥");
+}
+
+// إرسال رسالة
+function sendMsg(){
+  let m=document.getElementById("msg").value;
+
+  if(m==""){alert("اكتب رسالة");return;}
+
+  db.collection("messages").add({
+    user:user,
+    text:m
+  });
+
+  document.getElementById("msg").value="";
+  alert("تم الإرسال 😈");
+}
+
+// فتح الرسائل
+function openInbox(){
+
+  let u = prompt("اكتب username متاعك");
+
+  db.collection("messages")
+  .where("user","==",u)
+  .get()
+  .then((snap)=>{
+
+    let html="";
+
+    if(snap.empty){
+      html="😳 لا توجد رسائل";
+    }
+
+    snap.forEach(doc=>{
+      html+="<p>💌 "+doc.data().text+"</p>";
+    });
+
+    document.getElementById("result").style.display="none";
+    document.getElementById("inbox").style.display="block";
+    document.getElementById("messages").innerHTML=html;
+  });
+}
+
+</script>
+
+</body>
+</html>
+ 
+ 
+ 
+ 
