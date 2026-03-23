@@ -41,22 +41,21 @@ button{
   color:white;
   font-size:16px;
   cursor:pointer;
+  margin-top:10px;
 }
-.link{
-  background:#f3f3f3;
+#resultLink{
+  display:none;
+  background:#eee;
   padding:10px;
   border-radius:10px;
+  margin-top:10px;
   word-break:break-all;
-}
-#result{
-  display:none;
 }
 </style>
 </head>
 
 <body>
 
-<!-- FORM الكبيرة -->
 <div class="form" id="form">
 <h2>🔥 Secret Messages</h2>
 
@@ -64,16 +63,13 @@ button{
 <input id="username" placeholder="Username">
 <input id="password" type="password" placeholder="Password">
 
-<textarea id="bio" placeholder="اكتب رسالتك هنا 💌"></textarea>
+<textarea id="msg" placeholder="اكتب رسالتك"></textarea>
 
-<button onclick="handle()">🚀 متابعة</button>
-</div>
+<button onclick="sendMsg()">📤 إرسال</button>
 
-<!-- RESULT -->
-<div class="form" id="result">
-<h3>🔗 الرابط</h3>
-<p class="link" id="link"></p>
-<button onclick="copy()">📋 نسخ</button>
+<div id="resultLink"></div>
+<button onclick="copyLink()" id="copyBtn" style="display:none;">📋 نسخ الرابط</button>
+
 </div>
 
 <script>
@@ -87,72 +83,71 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-let params = new URLSearchParams(window.location.search);
-let user = params.get("user");
-let msgId = params.get("msg");
+// إرسال رسالة
+function sendMsg(){
 
-// 🔥 قراءة الرسالة
-if(msgId){
-  document.body.innerHTML = "⏳ تحميل...";
+  let username = document.getElementById("username").value;
+  let message = document.getElementById("msg").value;
 
-  setTimeout(async ()=>{
+  if(username=="" || message==""){
+    alert("عمر الخانات");
+    return;
+  }
+
+  db.collection("messages").add({
+    user: username,
+    text: message
+  }).then((docRef)=>{
+
+    let link = window.location.href.split("?")[0] + "?msg=" + docRef.id;
+
+    // عرض الرابط في الصفحة
+    document.getElementById("resultLink").style.display="block";
+    document.getElementById("copyBtn").style.display="block";
+
+    document.getElementById("resultLink").innerText = link;
+
+  });
+
+}
+
+// نسخ الرابط
+function copyLink(){
+  let text = document.getElementById("resultLink").innerText;
+  navigator.clipboard.writeText(text);
+  alert("تم النسخ 🔥");
+}
+
+// قراءة الرسالة من الرابط
+window.onload = async function() {
+
+  const params = new URLSearchParams(window.location.search);
+  const msgId = params.get("msg");
+
+  if(msgId){
+
+    document.body.innerHTML = "⏳ جاري تحميل...";
+
     let doc = await db.collection("messages").doc(msgId).get();
 
     if(doc.exists){
+
       document.body.innerHTML = `
         <div style="text-align:center;color:white;margin-top:100px;">
-          <h1>💌 رسالة سرية</h1>
-          <div style="background:#222;padding:20px;border-radius:20px;margin:20px;">
+          <h1>💌 رسالة</h1>
+          <div style="background:#222;padding:20px;border-radius:20px;">
             ${doc.data().text}
           </div>
         </div>
       `;
 
-      await db.collection("messages").doc(msgId).delete();
-
     } else {
-      document.body.innerHTML = "<h2 style='color:white;'>❌ الرسالة غير موجودة</h2>";
+      document.body.innerHTML = "<h2 style='color:white'>❌ الرسالة غير موجودة</h2>";
     }
-  },1000);
-}
 
-// 🔥 الزر الرئيسي
-function handle(){
-
-  let u = document.getElementById("username").value;
-  let m = document.getElementById("bio").value;
-
-  // إذا داخل برابط → إرسال رسالة
-  if(user){
-    if(m==""){alert("اكتب رسالة");return;}
-
-    db.collection("messages").add({
-      user:user,
-      text:m
-    }).then((docRef)=>{
-
-      let link = window.location.href.split("?")[0] + "?msg=" + docRef.id;
-
-      alert("📩 رابط الرسالة:\n" + link);
-    });
-
-  } else {
-    // إنشاء رابط خاص بك
-    if(u==""){alert("اكتب username");return;}
-
-    let link = window.location.href.split("?")[0]+"?user="+u;
-
-    document.getElementById("form").style.display="none";
-    document.getElementById("result").style.display="block";
-    document.getElementById("link").innerText = link;
   }
-}
 
-// نسخ الرابط
-function copy(){
-  navigator.clipboard.writeText(document.getElementById("link").innerText);
-  alert("تم النسخ 🔥");
-}
+};
 
 </script>
 
