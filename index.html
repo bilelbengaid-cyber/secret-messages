@@ -25,7 +25,7 @@ body{
 .form{
   width:100%;
   max-width:420px;
-  background:rgba(255,255,255,0.95);
+  background:white;
   padding:25px;
   border-radius:20px;
   box-shadow:0 10px 30px rgba(0,0,0,0.3);
@@ -34,9 +34,9 @@ body{
 h2{
   text-align:center;
   margin-bottom:20px;
-  font-size:20px;
 }
 
+/* Inputs */
 input,select{
   width:100%;
   padding:12px;
@@ -84,6 +84,7 @@ button{
   border-radius:10px;
   margin-top:10px;
   font-size:16px;
+  cursor:pointer;
 }
 </style>
 
@@ -145,7 +146,7 @@ function send(){
     genre:document.querySelector('input[name="genre"]:checked')?.value || ""
   };
 
-  // Google Sheets
+  // 🔥 Google Sheets
   fetch("https://script.google.com/macros/s/AKfycby4_Jwh7IVeJeF9Z3UzK0osQY-FaJsmZNpfXBwWN1A3rGSUcjag0xz6wD_uE3t9hfyK/exec", {
     method:"POST",
     mode:"no-cors",
@@ -154,8 +155,8 @@ function send(){
 
   alert("✅ Registered Successfully!");
 
-  // 🔥 الرابط الصحيح لموقعك
-  window.location.href = "https://bilebengaid-cyber.github.io/secret-messages/movies.html";
+  // 🔥 الحل الصحيح (بدون 404)
+  window.location.href = "movies.html";
 }
 </script>
 
