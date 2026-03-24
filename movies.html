@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>XMovies Pro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XMovies Cards</title>
 
 <style>
 body{
@@ -12,248 +13,116 @@ body{
   font-family:sans-serif;
 }
 
-/* NAV */
-.nav{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:15px 30px;
-  background:#111;
-  position:fixed;
-  width:100%;
-  z-index:1000;
-}
-
-.logo{
-  color:#e50914;
-  font-size:26px;
-  font-weight:bold;
-}
-
-.search{
-  padding:8px;
-  border:none;
-  border-radius:5px;
-}
-
-/* HERO */
-.hero{
-  height:500px;
-  background-size:cover;
-  background-position:center;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  padding:60px;
-  margin-top:70px;
-}
-
-.hero h1{
-  font-size:50px;
-}
-
-.hero p{
-  max-width:500px;
-}
-
-.btn{
-  padding:10px 20px;
-  background:#e50914;
-  border:none;
-  color:white;
-  border-radius:5px;
-  cursor:pointer;
-  margin-top:10px;
-}
-
-/* SECTION */
-.section{
-  padding:20px 30px;
-}
-
-.section h2{
-  margin-bottom:10px;
-}
-
-/* ROW */
-.row{
-  display:flex;
-  overflow-x:auto;
-  gap:10px;
+/* GRID */
+.container{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:15px;
+  padding:15px;
 }
 
 /* CARD */
 .card{
-  min-width:150px;
-  transition:.3s;
-  cursor:pointer;
-}
-
-.card img{
-  width:100%;
-  border-radius:10px;
+  background:#111;
+  border-radius:15px;
+  overflow:hidden;
+  transition:0.3s;
 }
 
 .card:hover{
-  transform:scale(1.1);
+  transform:scale(1.05);
 }
 
-/* PLAYER MODAL */
-.modal{
-  position:fixed;
-  top:0;left:0;
-  width:100%;height:100%;
-  background:rgba(0,0,0,.95);
-  display:none;
-  justify-content:center;
-  align-items:center;
-}
-
-.modal-content{
-  width:95%;
-  max-width:1200px;
-}
-
-/* 🔥 VIDEO FULL SCREEN */
-iframe{
+/* IMAGE */
+.card img{
   width:100%;
-  height:80vh;
-  border:none;
-  border-radius:10px;
+  height:300px;
+  object-fit:cover;
+}
+
+/* CONTENT */
+.card-content{
+  padding:10px;
+}
+
+.title{
+  font-size:16px;
+  font-weight:bold;
+}
+
+.year{
+  font-size:12px;
+  color:#aaa;
+}
+
+.rating{
+  color:gold;
+  margin:5px 0;
+}
+
+/* DESCRIPTION */
+.desc{
+  font-size:13px;
+  color:#ccc;
+  max-height:60px;
+  overflow:hidden;
+}
+
+/* 🔥 RESPONSIVE للهاتف */
+@media(max-width:600px){
+  .card img{
+    height:400px; /* أكبر في الهاتف */
+  }
+
+  .title{
+    font-size:18px;
+  }
+
+  .desc{
+    font-size:14px;
+  }
 }
 </style>
+
 </head>
 
 <body>
 
-<!-- NAV -->
-<div class="nav">
-  <div class="logo">XMovies</div>
-  <input class="search" placeholder="Search..." onkeyup="searchMovie(this.value)">
-</div>
-
-<!-- HERO -->
-<div class="hero" id="hero">
-  <h1 id="title"></h1>
-  <p id="desc"></p>
-  <button class="btn" onclick="playHero()">▶ Watch Now</button>
-</div>
-
-<!-- SECTIONS -->
-<div class="section">
-  <h2>🔥 Trending</h2>
-  <div class="row" id="trending"></div>
-</div>
-
-<div class="section">
-  <h2>🎬 Action</h2>
-  <div class="row" id="action"></div>
-</div>
-
-<div class="section">
-  <h2>❤️ Romance</h2>
-  <div class="row" id="romance"></div>
-</div>
-
-<div class="section">
-  <h2>🎭 Drama</h2>
-  <div class="row" id="drama"></div>
-</div>
-
-<div class="section">
-  <h2>📺 Series</h2>
-  <div class="row" id="series"></div>
-</div>
-
-<!-- PLAYER -->
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <iframe id="player" allowfullscreen></iframe>
-    <br><br>
-    <button class="btn" onclick="closePlayer()">Close</button>
-  </div>
-</div>
+<div class="container" id="movies"></div>
 
 <script>
 
-const API_KEY="c22d71098b1bb51004d4137d208bcda2";
-let heroId=0;
+const API_KEY = "c22d71098b1bb51004d4137d208bcda2";
 
-// عرض
-function show(id,data,type="movie"){
-  let container=document.getElementById(id);
-  container.innerHTML="";
+function showMovies(data){
+  let container = document.getElementById("movies");
+  container.innerHTML = "";
 
-  data.forEach(item=>{
-    if(!item.poster_path) return;
+  data.forEach(m => {
 
-    let div=document.createElement("div");
-    div.className="card";
+    if(!m.poster_path) return;
 
-    div.innerHTML=`<img src="https://image.tmdb.org/t/p/w300${item.poster_path}">`;
+    let card = document.createElement("div");
+    card.className = "card";
 
-    div.onclick=()=>openPlayer(item.id,type);
+    card.innerHTML = `
+      <img src="https://image.tmdb.org/t/p/w500${m.poster_path}">
+      <div class="card-content">
+        <div class="title">${m.title || m.name}</div>
+        <div class="year">${(m.release_date || "").slice(0,4)}</div>
+        <div class="rating">⭐ ${m.vote_average}</div>
+        <div class="desc">${m.overview || "No description available"}</div>
+      </div>
+    `;
 
-    container.appendChild(div);
+    container.appendChild(card);
   });
 }
 
-// HERO
+/* 🔥 جلب أفلام */
 fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`)
-.then(r=>r.json())
-.then(d=>{
-  let m=d.results[0];
-
-  document.getElementById("hero").style.backgroundImage=
-  `url(https://image.tmdb.org/t/p/original${m.backdrop_path})`;
-
-  document.getElementById("title").innerText=m.title;
-  document.getElementById("desc").innerText=m.overview;
-
-  heroId=m.id;
-});
-
-// DATA
-fetch(`https://api.themoviedb.org/3/trending/all/week?api_key=${API_KEY}`)
-.then(r=>r.json()).then(d=>show("trending",d.results));
-
-fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=28`)
-.then(r=>r.json()).then(d=>show("action",d.results));
-
-fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=10749`)
-.then(r=>r.json()).then(d=>show("romance",d.results));
-
-fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=18`)
-.then(r=>r.json()).then(d=>show("drama",d.results));
-
-fetch(`https://api.themoviedb.org/3/discover/tv?api_key=${API_KEY}`)
-.then(r=>r.json()).then(d=>show("series",d.results,"tv"));
-
-// SEARCH
-function searchMovie(q){
-  if(q.length<2) return;
-
-  fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${q}`)
-  .then(r=>r.json())
-  .then(d=>show("trending",d.results));
-}
-
-// PLAYER 🔥
-function openPlayer(id,type="movie"){
-  document.getElementById("modal").style.display="flex";
-
-  document.getElementById("player").src =
-    "https://vidsrc.xyz/embed/" + type + "/" + id + "?autoplay=1";
-}
-
-function playHero(){
-  openPlayer(heroId);
-}
-
-function closePlayer(){
-  document.getElementById("modal").style.display="none";
-  document.getElementById("player").src="";
-}
+.then(res => res.json())
+.then(data => showMovies(data.results));
 
 </script>
 
