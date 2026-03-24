@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Love Challenge PRO MAX 💖🔥</title>
+<title>Love Challenge PRO 💖🔥</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -123,8 +123,10 @@ const db = firebase.firestore();
 
 // Vars
 let finalLink="", savedMessage="";
-let score=0, level=1, time=10;
+let score=0, time=10;
 let timer,spawnInterval;
+
+let scoreEl, info, form, game, final;
 
 // START
 function start(){
@@ -161,7 +163,7 @@ function start(){
     text:data.message
   }).then(doc=>{
     finalLink=location.href.split("?")[0]+"?msg="+doc.id;
-    linkBox.innerText=finalLink;
+    document.getElementById("linkBox").innerText=finalLink;
   });
 }
 
@@ -195,21 +197,32 @@ function startLevel(){
 function spawn(){
   spawnInterval=setInterval(()=>{
     let el=document.createElement("div");
-    el.innerText=Math.random()<0.2?"💔":"❤️";
+
+    let isBad=Math.random()<0.2;
+    el.innerText=isBad?"💔":"❤️";
+
     el.className="item";
     el.style.left=Math.random()*90+"%";
     el.style.top=Math.random()*90+"%";
 
     el.onclick=()=>{
-      if(el.innerText=="💔"){lose();return;}
+      if(isBad){
+        lose();
+        return;
+      }
+
       score++;
       scoreEl.innerText=score;
       el.remove();
-      if(score>=10) finish();
+
+      if(score>=10){
+        finish();
+      }
     };
 
     document.body.appendChild(el);
     setTimeout(()=>el.remove(),2000);
+
   },500);
 }
 
@@ -229,8 +242,16 @@ function finish(){
 }
 
 // Load
-window.onload=async()=>{
+window.onload=async ()=>{
+
+  scoreEl=document.getElementById("score");
+  info=document.getElementById("info");
+  form=document.getElementById("form");
+  game=document.getElementById("game");
+  final=document.getElementById("final");
+
   let id=new URLSearchParams(location.search).get("msg");
+
   if(id){
     form.style.display="none";
     game.style.display="block";
@@ -242,6 +263,7 @@ window.onload=async()=>{
     }
   }
 };
+
 </script>
 
 </body>
