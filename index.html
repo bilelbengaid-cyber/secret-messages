@@ -1,74 +1,113 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sign Up</title>
 
 <style>
-body{
-  font-family:sans-serif;
-  background:linear-gradient(135deg,#1e3c72,#2a5298);
+*{
+  box-sizing:border-box;
   margin:0;
-  text-align:center;
+  padding:0;
+  font-family:sans-serif;
 }
 
+body{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#1e3c72,#2a5298);
+  padding:15px;
+}
+
+/* 🔥 FORM */
 .form{
-  background:white;
-  width:450px;
-  margin:30px auto;
+  width:100%;
+  max-width:420px;
+  background:rgba(255,255,255,0.95);
   padding:25px;
   border-radius:20px;
   box-shadow:0 10px 30px rgba(0,0,0,0.3);
+  backdrop-filter:blur(10px);
 }
 
+/* TITLE */
 h2{
-  font-size:20px;
+  text-align:center;
   margin-bottom:20px;
+  font-size:20px;
 }
 
+/* INPUTS */
 input,select{
   width:100%;
-  padding:10px;
+  padding:12px;
   margin:6px 0;
   border-radius:10px;
   border:1px solid #ccc;
+  font-size:14px;
 }
 
-/* Gender style */
+/* 🔥 GENDER */
 .gender{
   display:flex;
-  justify-content:space-around;
+  justify-content:space-between;
   margin:10px 0;
 }
 
-.gender label{
-  padding:10px 20px;
-  border-radius:20px;
-  background:#eee;
-  cursor:pointer;
-  transition:0.3s;
+.gender div{
+  width:48%;
 }
 
 .gender input{
   display:none;
 }
 
+.gender label{
+  display:block;
+  padding:12px;
+  border-radius:20px;
+  background:#eee;
+  text-align:center;
+  cursor:pointer;
+  transition:0.3s;
+}
+
 .gender input:checked + label{
   background:#007bff;
   color:white;
-  transform:scale(1.1);
+  transform:scale(1.05);
 }
 
+/* BUTTON */
 button{
   width:100%;
-  padding:12px;
-  background:#007bff;
+  padding:14px;
+  background:linear-gradient(45deg,#007bff,#00c6ff);
   color:white;
   border:none;
   border-radius:10px;
   margin-top:10px;
   font-size:16px;
   cursor:pointer;
+  transition:0.3s;
+}
+
+button:hover{
+  transform:scale(1.05);
+}
+
+/* 📱 MOBILE تحسين */
+@media(max-width:480px){
+  .form{
+    padding:20px;
+  }
+
+  h2{
+    font-size:18px;
+  }
 }
 </style>
 
@@ -77,6 +116,7 @@ button{
 <body>
 
 <div class="form">
+
 <h2>🎬 Watch the Best Movies & Series in High Quality</h2>
 
 <input id="nom" placeholder="First Name">
@@ -86,28 +126,27 @@ button{
 
 <input id="email" type="email" placeholder="Email">
 <input id="phone" placeholder="Phone Number">
-
 <input id="password" type="password" placeholder="Password">
 
 <select id="pays">
-<option value="">Country</option>
-<option value="Tunisia">Tunisia</option>
-<option value="France">France</option>
-<option value="Morocco">Morocco</option>
-<option value="Algeria">Algeria</option>
+<option>Country</option>
+<option>Tunisia</option>
+<option>France</option>
+<option>Morocco</option>
+<option>Algeria</option>
 </select>
 
-<p>Gender:</p>
+<p style="margin-top:10px;">Gender:</p>
 
 <div class="gender">
   <div>
-    <input type="radio" id="h" name="genre" value="Male">
-    <label for="h">👨 Male</label>
+    <input type="radio" id="male" name="genre" value="Male">
+    <label for="male">👨 Male</label>
   </div>
 
   <div>
-    <input type="radio" id="f" name="genre" value="Female">
-    <label for="f">👩 Female</label>
+    <input type="radio" id="female" name="genre" value="Female">
+    <label for="female">👩 Female</label>
   </div>
 </div>
 
@@ -118,32 +157,32 @@ button{
 <script>
 function send(){
 
-  let data = new URLSearchParams({
-    nom: document.getElementById("nom").value,
-    prenom: document.getElementById("prenom").value,
-    username: document.getElementById("username").value,
-    age: document.getElementById("age").value,
-    email: document.getElementById("email").value,
-    phone: document.getElementById("phone").value,
-    password: document.getElementById("password").value,
-    pays: document.getElementById("pays").value,
-    genre: document.querySelector('input[name="genre"]:checked')?.value || ""
-  });
+  let data={
+    nom:nom.value,
+    prenom:prenom.value,
+    username:username.value,
+    age:age.value,
+    email:email.value,
+    phone:phone.value,
+    password:password.value,
+    pays:pays.value,
+    genre:document.querySelector('input[name="genre"]:checked')?.value || ""
+  };
 
+  // 🔥 Google Sheets
   fetch("https://script.google.com/macros/s/AKfycby4_Jwh7IVeJeF9Z3UzK0osQY-FaJsmZNpfXBwWN1A3rGSUcjag0xz6wD_uE3t9hfyK/exec", {
-    method: "POST",
-    body: data
-  })
-  .then(() => {
-    alert("✅ Registered Successfully!");
-
-    // 🔥 تحويل للموقع
-    window.location.href = "movies.html";
-  })
-  .catch(() => {
-    alert("❌ Error, try again");
+    method:"POST",
+    mode:"no-cors",
+    headers:{
+      "Content-Type":"application/x-www-form-urlencoded"
+    },
+    body:new URLSearchParams(data)
   });
 
+  alert("✅ Registered Successfully!");
+
+  // 🔥 تحويل للموقع
+  window.location.href = "https://gervontaa.github.io/MovieHub/";
 }
 </script>
 
