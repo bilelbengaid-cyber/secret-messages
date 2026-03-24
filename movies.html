@@ -3,126 +3,148 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XMovies Cards</title>
+<title>XMovies ULTRA</title>
 
 <style>
-body{
-  margin:0;
-  background:#0b0b0b;
-  color:white;
-  font-family:sans-serif;
-}
+body{margin:0;background:#0b0b0b;color:white;font-family:sans-serif}
 
-/* GRID */
-.container{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  gap:15px;
-  padding:15px;
+/* NAV */
+.nav{
+  display:flex;justify-content:space-between;
+  padding:15px 20px;background:#111;position:fixed;width:100%;z-index:10
 }
+.logo{color:#e50914;font-size:22px;font-weight:bold}
+.search{padding:8px;border:none;border-radius:5px;width:120px}
+
+/* SECTIONS */
+.section{padding:70px 15px 20px}
+.row{display:flex;overflow-x:auto}
 
 /* CARD */
 .card{
+  min-width:180px;
+  margin:10px;
   background:#111;
-  border-radius:15px;
+  border-radius:10px;
   overflow:hidden;
-  transition:0.3s;
+  transition:.3s;
 }
+.card:hover{transform:scale(1.05)}
 
-.card:hover{
-  transform:scale(1.05);
-}
-
-/* IMAGE */
 .card img{
   width:100%;
-  height:300px;
+  height:260px;
   object-fit:cover;
 }
 
-/* CONTENT */
-.card-content{
-  padding:10px;
-}
-
-.title{
-  font-size:16px;
-  font-weight:bold;
-}
-
-.year{
-  font-size:12px;
-  color:#aaa;
-}
-
-.rating{
-  color:gold;
-  margin:5px 0;
-}
-
-/* DESCRIPTION */
+/* INFO */
+.info{padding:10px}
+.title{font-size:14px;font-weight:bold}
+.rating{color:gold;font-size:13px;margin:3px 0}
 .desc{
-  font-size:13px;
+  font-size:12px;
   color:#ccc;
-  max-height:60px;
+  max-height:50px;
   overflow:hidden;
 }
 
-/* 🔥 RESPONSIVE للهاتف */
+/* 🔥 الهاتف */
 @media(max-width:600px){
+  .card{
+    min-width:220px; /* أكبر في الهاتف */
+  }
   .card img{
-    height:400px; /* أكبر في الهاتف */
-  }
-
-  .title{
-    font-size:18px;
-  }
-
-  .desc{
-    font-size:14px;
+    height:300px;
   }
 }
 </style>
-
 </head>
 
 <body>
 
-<div class="container" id="movies"></div>
+<div class="nav">
+  <div class="logo">XMovies</div>
+  <input class="search" placeholder="Search..." onkeyup="searchMovie(this.value)">
+</div>
+
+<div class="section">
+  <h2>🔥 Trending</h2>
+  <div class="row" id="trending"></div>
+</div>
+
+<div class="section">
+  <h2>🎬 Action</h2>
+  <div class="row" id="action"></div>
+</div>
+
+<div class="section">
+  <h2>❤️ Romance</h2>
+  <div class="row" id="romance"></div>
+</div>
 
 <script>
 
-const API_KEY = "c22d71098b1bb51004d4137d208bcda2";
+const API_KEY="c22d71098b1bb51004d4137d208bcda2";
 
-function showMovies(data){
-  let container = document.getElementById("movies");
-  container.innerHTML = "";
+/* 🔥 ترجمة للعربي */
+async function translateToArabic(text){
+  try{
+    let res = await fetch("https://api.mymemory.translated.net/get?q="+encodeURIComponent(text)+"&langpair=en|ar");
+    let data = await res.json();
+    return data.responseData.translatedText;
+  }catch{
+    return text;
+  }
+}
 
-  data.forEach(m => {
+/* عرض */
+async function show(id,data){
 
-    if(!m.poster_path) return;
+  let c=document.getElementById(id);
+  c.innerHTML="";
 
-    let card = document.createElement("div");
-    card.className = "card";
+  for(let item of data){
 
-    card.innerHTML = `
-      <img src="https://image.tmdb.org/t/p/w500${m.poster_path}">
-      <div class="card-content">
-        <div class="title">${m.title || m.name}</div>
-        <div class="year">${(m.release_date || "").slice(0,4)}</div>
-        <div class="rating">⭐ ${m.vote_average}</div>
-        <div class="desc">${m.overview || "No description available"}</div>
+    if(!item.poster_path) continue;
+
+    let desc = item.overview || "No description";
+
+    // 🔥 ترجمة
+    let arDesc = await translateToArabic(desc);
+
+    let d=document.createElement("div");
+    d.className="card";
+
+    d.innerHTML=`
+      <img src="https://image.tmdb.org/t/p/w500${item.poster_path}">
+      <div class="info">
+        <div class="title">${item.title || item.name}</div>
+        <div class="rating">⭐ ${item.vote_average}</div>
+        <div class="desc">${arDesc}</div>
       </div>
     `;
 
-    container.appendChild(card);
-  });
+    c.appendChild(d);
+  }
 }
 
-/* 🔥 جلب أفلام */
+/* API */
 fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`)
-.then(res => res.json())
-.then(data => showMovies(data.results));
+.then(r=>r.json()).then(d=>show("trending",d.results));
+
+fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=28`)
+.then(r=>r.json()).then(d=>show("action",d.results));
+
+fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=10749`)
+.then(r=>r.json()).then(d=>show("romance",d.results));
+
+/* SEARCH */
+function searchMovie(q){
+  if(q.length<2) return;
+  fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${q}`)
+  .then(r=>r.json())
+  .then(d=>show("trending",d.results));
+}
 
 </script>
 
