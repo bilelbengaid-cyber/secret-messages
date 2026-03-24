@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>XMovies Clean</title>
+<title>XMovies Pro</title>
 
 <style>
 body{
@@ -98,7 +98,7 @@ body{
   transform:scale(1.1);
 }
 
-/* PLAYER */
+/* PLAYER MODAL */
 .modal{
   position:fixed;
   top:0;left:0;
@@ -110,14 +110,16 @@ body{
 }
 
 .modal-content{
-  width:80%;
-  max-width:900px;
+  width:95%;
+  max-width:1200px;
 }
 
+/* 🔥 VIDEO FULL SCREEN */
 iframe{
   width:100%;
-  height:500px;
+  height:80vh;
   border:none;
+  border-radius:10px;
 }
 </style>
 </head>
@@ -166,7 +168,7 @@ iframe{
 <!-- PLAYER -->
 <div class="modal" id="modal">
   <div class="modal-content">
-    <iframe id="player"></iframe>
+    <iframe id="player" allowfullscreen></iframe>
     <br><br>
     <button class="btn" onclick="closePlayer()">Close</button>
   </div>
@@ -236,11 +238,12 @@ function searchMovie(q){
   .then(d=>show("trending",d.results));
 }
 
-// PLAYER
+// PLAYER 🔥
 function openPlayer(id,type="movie"){
   document.getElementById("modal").style.display="flex";
+
   document.getElementById("player").src =
-    "https://vidsrc.xyz/embed/" + type + "/" + id;
+    "https://vidsrc.xyz/embed/" + type + "/" + id + "?autoplay=1";
 }
 
 function playHero(){
