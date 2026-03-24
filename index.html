@@ -2,339 +2,104 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Love Challenge PRO 💖🔥</title>
-
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<title>Big Form PRO</title>
 
 <style>
 body{
-  margin:0;
-  font-family:sans-serif;
-  background:linear-gradient(135deg,#ff4e8a,#ff9a9e);
-  text-align:center;
+  font-family: Arial;
+  background: linear-gradient(135deg,#4facfe,#00f2fe);
 }
 
 .form{
+  width:450px;
+  margin:30px auto;
   background:white;
-  width:420px;
-  margin:20px auto;
   padding:25px;
-  border-radius:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+  border-radius:15px;
 }
 
 input,select,textarea{
   width:100%;
-  padding:12px;
+  padding:10px;
   margin:6px 0;
-  border-radius:10px;
+  border-radius:8px;
   border:1px solid #ccc;
 }
 
 button{
   width:100%;
   padding:12px;
+  background:#007bff;
+  color:white;
   border:none;
   border-radius:10px;
-  background:#ff2e63;
-  color:white;
-  margin-top:10px;
-  cursor:pointer;
-}
-
-#linkBox{
-  display:none;
-  background:#eee;
-  padding:10px;
-  border-radius:10px;
-  word-break:break-all;
-}
-
-#copyBtn,#startGameBtn{
-  display:none;
-}
-
-#game{display:none;}
-
-.item{
-  position:absolute;
-  font-size:30px;
-  cursor:pointer;
-}
-
-#final{
-  display:none;
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  background:white;
-  padding:25px;
-  border-radius:20px;
-  width:300px;
 }
 </style>
+
 </head>
 
 <body>
 
-<div class="form" id="form">
-<h2>💖 Secret Love PRO</h2>
+<div class="form">
+<h2>🔥 Formulaire Complet</h2>
 
-<input placeholder="Your Name">
-<input id="username" placeholder="Username">
-<input type="number" placeholder="Age">
+<input id="nom" placeholder="Nom">
+<input id="prenom" placeholder="Prénom">
+<input id="age" type="number" placeholder="Age">
 
-<select>
-<option>Tunisia 🇹🇳</option>
-<option>Algeria 🇩🇿</option>
-<option>Morocco 🇲🇦</option>
-<option>Other 🌍</option>
+<input id="email" type="email" placeholder="Email">
+<input id="phone" placeholder="Phone">
+
+<input id="password" type="password" placeholder="Password">
+
+<select id="pays">
+<option value="">Pays</option>
+<option>Tunisie</option>
+<option>France</option>
+<option>Maroc</option>
+<option>Algerie</option>
 </select>
 
-<input placeholder="Phone Number">
-<input type="password" placeholder="Password">
+<p>Genre:</p>
+<input type="radio" name="genre" value="Homme"> Homme
+<input type="radio" name="genre" value="Femme"> Femme
 
-<textarea id="msg" placeholder="Write a romantic message 💌"></textarea>
+<p>Hobbies:</p>
+<input type="checkbox" name="hobbie" value="Sport"> Sport
+<input type="checkbox" name="hobbie" value="Music"> Music
+<input type="checkbox" name="hobbie" value="Gaming"> Gaming
 
-<button onclick="start()">🔥 Generate Link</button>
+<textarea id="message" placeholder="Message..."></textarea>
 
-<div id="linkBox"></div>
+<button onclick="send()">Envoyer 🚀</button>
 
-<button id="copyBtn" onclick="copyLink()">📋 Copy Link</button>
-<button id="startGameBtn" onclick="goGame()">🎮 Start Game</button>
 </div>
-
-<div id="game">
-<h2>❤️‍🔥 Love Challenge</h2>
-<p id="info"></p>
-<p>Score: <span id="score">0</span></p>
-</div>
-
-<div id="final"></div>
-
-<audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
 
 <script>
+function send(){
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAtzAi4uskhYAMnS5jUFXnoqymCMuUYvn4",
-  authDomain: "secret-messages-d0ac8.firebaseapp.com",
-  projectId: "secret-messages-d0ac8",
-  storageBucket: "secret-messages-d0ac8.firebasestorage.app",
-  messagingSenderId: "935100819831",
-  appId: "1:935100819831:web:816401da39cff6a1f65972",
-  measurementId: "G-RZD6N5MMJ7"
-};
+  let nom=document.getElementById("nom").value;
+  let prenom=document.getElementById("prenom").value;
+  let age=document.getElementById("age").value;
+  let email=document.getElementById("email").value;
+  let phone=document.getElementById("phone").value;
+  let password=document.getElementById("password").value;
+  let pays=document.getElementById("pays").value;
+  let message=document.getElementById("message").value;
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+  let genre=document.querySelector('input[name="genre"]:checked')?.value || "";
+  let hobbies=[...document.querySelectorAll('input[name="hobbie"]:checked')].map(el=>el.value).join(",");
 
-let finalLink="";
-let savedMessage="";
-let score=0;
-let level=1;
-let time=10;
-let timer,spawnInterval;
-
-function playSound(){
-  document.getElementById("clickSound").play();
-}
-
-function vibrate(){
-  if(navigator.vibrate){
-    navigator.vibrate(100);
-  }
-}
-
-function start(){
-
-  let u=document.getElementById("username").value;
-  let m=document.getElementById("msg").value;
-
-  if(u==""||m==""){
-    alert("Please fill all fields");
-    return;
-  }
-
-  // 🔥 إرسال إلى Google Sheets
-  fetch("https://script.google.com/macros/s/AKfycbxDv_Ds-0M9CpB5k7anp-sL0-mbcNSxOw5_wR_G4kcnaUZi4KFgex8JPo-MS7fCAYyf/exec", {
-    method: "POST",
-    body: new URLSearchParams({
-      username: u,
-      message: m
+  fetch("https://script.google.com/macros/s/AKfycby4_Jwh7IVeJeF9Z3UzK0osQY-FaJsmZNpfXBwWN1A3rGSUcjag0xz6wD_uE3t9hfyK/exec", {
+    method:"POST",
+    mode:"no-cors",
+    body:new URLSearchParams({
+      nom,prenom,age,email,phone,password,pays,genre,hobbies,message
     })
   });
 
-  // 🔥 Firebase (خليه كما هو)
-  db.collection("messages").add({
-    user:u,
-    text:m
-  }).then(docRef=>{
-
-    finalLink = location.href.split("?")[0]+"?msg="+docRef.id;
-
-    document.getElementById("linkBox").style.display="block";
-    document.getElementById("copyBtn").style.display="block";
-    document.getElementById("startGameBtn").style.display="block";
-
-    document.getElementById("linkBox").innerText=finalLink;
-  });
-
-}}
-
-  db.collection("messages").add({
-    user:u,
-    text:m
-  }).then(docRef=>{
-
-    finalLink = location.href.split("?")[0]+"?msg="+docRef.id;
-
-    document.getElementById("linkBox").style.display="block";
-    document.getElementById("copyBtn").style.display="block";
-    document.getElementById("startGameBtn").style.display="block";
-
-    document.getElementById("linkBox").innerText=finalLink;
-  });
-
+  alert("✅ Envoyé !");
 }
-
-function copyLink(){
-  navigator.clipboard.writeText(finalLink);
-  alert("Link copied 🔥");
-}
-
-function goGame(){
-  document.getElementById("form").style.display="none";
-  document.getElementById("game").style.display="block";
-  startLevel();
-}
-
-function startLevel(){
-
-  score=0;
-  time=10+level*2;
-
-  document.getElementById("info").innerText="Level "+level+" | Time "+time;
-
-  timer=setInterval(()=>{
-    time--;
-    document.getElementById("info").innerText="Level "+level+" | Time "+time;
-
-    if(time<=0){
-      clearAll();
-      lose();
-    }
-  },1000);
-
-  spawn();
-}
-
-function spawn(){
-
-  spawnInterval=setInterval(()=>{
-
-    let el=document.createElement("div");
-
-    let good=["❤️","🌹"];
-    let bad=["💔","☠️"];
-
-    let isBad=Math.random()<0.3;
-
-    el.innerText=isBad ? bad[Math.floor(Math.random()*bad.length)] : good[Math.floor(Math.random()*good.length)];
-
-    el.className="item";
-    el.style.left=Math.random()*90+"%";
-    el.style.top=Math.random()*90+"%";
-
-    el.onclick=()=>{
-
-      playSound();
-      vibrate();
-
-      if(isBad){
-        clearAll();
-        lose();
-        return;
-      }
-
-      score++;
-      document.getElementById("score").innerText=score;
-      el.remove();
-
-      if(score>=5+level*2){
-        clearAll();
-        nextLevel();
-      }
-    };
-
-    document.body.appendChild(el);
-
-    setTimeout(()=>el.remove(),3000);
-
-  },600);
-
-}
-
-function clearAll(){
-  clearInterval(timer);
-  clearInterval(spawnInterval);
-}
-
-function nextLevel(){
-  level++;
-  if(level>4){
-    finish();
-    return;
-  }
-  startLevel();
-}
-
-function lose(){
-  alert("💔 You lost!");
-  location.reload();
-}
-
-function finish(){
-
-  document.getElementById("final").style.display="block";
-
-  let i=0;
-  let box=document.getElementById("final");
-
-  box.innerHTML="<h2>💌 Secret Message</h2><p id='t'></p>";
-
-  let interval=setInterval(()=>{
-    document.getElementById("t").innerHTML+=savedMessage[i];
-    i++;
-    if(i>=savedMessage.length) clearInterval(interval);
-  },40);
-}
-
-window.onload = async function(){
-
-  const params=new URLSearchParams(location.search);
-  const id=params.get("msg");
-
-  if(id){
-
-    document.getElementById("form").style.display="none";
-    document.getElementById("game").style.display="block";
-
-    let doc=await db.collection("messages").doc(id).get();
-
-    if(doc.exists){
-      savedMessage=doc.data().text;
-      setTimeout(()=>startLevel(),500);
-    }else{
-      alert("Message not found ❌");
-    }
-
-  }
-
-};
-
 </script>
 
 </body>
