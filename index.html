@@ -147,11 +147,17 @@ function send(){
   };
 
   // 🔥 Google Sheets
-  fetch("https://script.google.com/macros/s/AKfycby4_Jwh7IVeJeF9Z3UzK0osQY-FaJsmZNpfXBwWN1A3rGSUcjag0xz6wD_uE3t9hfyK/exec", {
-    method:"POST",
-    mode:"no-cors",
-    body:new URLSearchParams(data)
-  });
+ fetch("https://script.google.com/macros/s/AKfycbzSmpPoLS8mtCEWFjJ7lPYdbBgoynm9o2jAIffqgjDmtycRbBwE0i4pPSV4H3El_mQ1/exec", {
+  method:"POST",
+  headers:{
+    "Content-Type":"application/x-www-form-urlencoded"
+  },
+  body:new URLSearchParams(data)
+})
+.then(()=>{
+  alert("✅ Registered Successfully!");
+  window.location.href = "movies.html";
+});
 
   alert("✅ Registered Successfully!");
 
