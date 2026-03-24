@@ -2,71 +2,144 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XMovies ULTRA</title>
+<title>XMovies Pro</title>
 
 <style>
-body{margin:0;background:#0b0b0b;color:white;font-family:sans-serif}
+body{
+  margin:0;
+  background:#0b0b0b;
+  color:white;
+  font-family:sans-serif;
+}
 
 /* NAV */
 .nav{
-  display:flex;justify-content:space-between;
-  padding:15px 20px;background:#111;position:fixed;width:100%;z-index:10
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 30px;
+  background:#111;
+  position:fixed;
+  width:100%;
+  z-index:1000;
 }
-.logo{color:#e50914;font-size:22px;font-weight:bold}
-.search{padding:8px;border:none;border-radius:5px;width:120px}
 
-/* SECTIONS */
-.section{padding:70px 15px 20px}
-.row{display:flex;overflow-x:auto}
+.logo{
+  color:#e50914;
+  font-size:26px;
+  font-weight:bold;
+}
+
+.search{
+  padding:8px;
+  border:none;
+  border-radius:5px;
+}
+
+/* HERO */
+.hero{
+  height:500px;
+  background-size:cover;
+  background-position:center;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:60px;
+  margin-top:70px;
+}
+
+.hero h1{
+  font-size:50px;
+}
+
+.hero p{
+  max-width:500px;
+}
+
+.btn{
+  padding:10px 20px;
+  background:#e50914;
+  border:none;
+  color:white;
+  border-radius:5px;
+  cursor:pointer;
+  margin-top:10px;
+}
+
+/* SECTION */
+.section{
+  padding:20px 30px;
+}
+
+.section h2{
+  margin-bottom:10px;
+}
+
+/* ROW */
+.row{
+  display:flex;
+  overflow-x:auto;
+  gap:10px;
+}
 
 /* CARD */
 .card{
-  min-width:180px;
-  margin:10px;
-  background:#111;
-  border-radius:10px;
-  overflow:hidden;
+  min-width:150px;
   transition:.3s;
+  cursor:pointer;
 }
-.card:hover{transform:scale(1.05)}
 
 .card img{
   width:100%;
-  height:260px;
-  object-fit:cover;
+  border-radius:10px;
 }
 
-/* INFO */
-.info{padding:10px}
-.title{font-size:14px;font-weight:bold}
-.rating{color:gold;font-size:13px;margin:3px 0}
-.desc{
-  font-size:12px;
-  color:#ccc;
-  max-height:50px;
-  overflow:hidden;
+.card:hover{
+  transform:scale(1.1);
 }
 
-/* 🔥 الهاتف */
-@media(max-width:600px){
-  .card{
-    min-width:220px; /* أكبر في الهاتف */
-  }
-  .card img{
-    height:300px;
-  }
+/* PLAYER MODAL */
+.modal{
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,.95);
+  display:none;
+  justify-content:center;
+  align-items:center;
+}
+
+.modal-content{
+  width:95%;
+  max-width:1200px;
+}
+
+/* 🔥 VIDEO FULL SCREEN */
+iframe{
+  width:100%;
+  height:80vh;
+  border:none;
+  border-radius:10px;
 }
 </style>
 </head>
 
 <body>
 
+<!-- NAV -->
 <div class="nav">
   <div class="logo">XMovies</div>
   <input class="search" placeholder="Search..." onkeyup="searchMovie(this.value)">
 </div>
 
+<!-- HERO -->
+<div class="hero" id="hero">
+  <h1 id="title"></h1>
+  <p id="desc"></p>
+  <button class="btn" onclick="playHero()">▶ Watch Now</button>
+</div>
+
+<!-- SECTIONS -->
 <div class="section">
   <h2>🔥 Trending</h2>
   <div class="row" id="trending"></div>
@@ -82,54 +155,66 @@ body{margin:0;background:#0b0b0b;color:white;font-family:sans-serif}
   <div class="row" id="romance"></div>
 </div>
 
+<div class="section">
+  <h2>🎭 Drama</h2>
+  <div class="row" id="drama"></div>
+</div>
+
+<div class="section">
+  <h2>📺 Series</h2>
+  <div class="row" id="series"></div>
+</div>
+
+<!-- PLAYER -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <iframe id="player" allowfullscreen></iframe>
+    <br><br>
+    <button class="btn" onclick="closePlayer()">Close</button>
+  </div>
+</div>
+
 <script>
 
 const API_KEY="c22d71098b1bb51004d4137d208bcda2";
+let heroId=0;
 
-/* 🔥 ترجمة للعربي */
-async function translateToArabic(text){
-  try{
-    let res = await fetch("https://api.mymemory.translated.net/get?q="+encodeURIComponent(text)+"&langpair=en|ar");
-    let data = await res.json();
-    return data.responseData.translatedText;
-  }catch{
-    return text;
-  }
+// عرض
+function show(id,data,type="movie"){
+  let container=document.getElementById(id);
+  container.innerHTML="";
+
+  data.forEach(item=>{
+    if(!item.poster_path) return;
+
+    let div=document.createElement("div");
+    div.className="card";
+
+    div.innerHTML=`<img src="https://image.tmdb.org/t/p/w300${item.poster_path}">`;
+
+    div.onclick=()=>openPlayer(item.id,type);
+
+    container.appendChild(div);
+  });
 }
 
-/* عرض */
-async function show(id,data){
-
-  let c=document.getElementById(id);
-  c.innerHTML="";
-
-  for(let item of data){
-
-    if(!item.poster_path) continue;
-
-    let desc = item.overview || "No description";
-
-    // 🔥 ترجمة
-    let arDesc = await translateToArabic(desc);
-
-    let d=document.createElement("div");
-    d.className="card";
-
-    d.innerHTML=`
-      <img src="https://image.tmdb.org/t/p/w500${item.poster_path}">
-      <div class="info">
-        <div class="title">${item.title || item.name}</div>
-        <div class="rating">⭐ ${item.vote_average}</div>
-        <div class="desc">${arDesc}</div>
-      </div>
-    `;
-
-    c.appendChild(d);
-  }
-}
-
-/* API */
+// HERO
 fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`)
+.then(r=>r.json())
+.then(d=>{
+  let m=d.results[0];
+
+  document.getElementById("hero").style.backgroundImage=
+  `url(https://image.tmdb.org/t/p/original${m.backdrop_path})`;
+
+  document.getElementById("title").innerText=m.title;
+  document.getElementById("desc").innerText=m.overview;
+
+  heroId=m.id;
+});
+
+// DATA
+fetch(`https://api.themoviedb.org/3/trending/all/week?api_key=${API_KEY}`)
 .then(r=>r.json()).then(d=>show("trending",d.results));
 
 fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=28`)
@@ -138,12 +223,36 @@ fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genre
 fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=10749`)
 .then(r=>r.json()).then(d=>show("romance",d.results));
 
-/* SEARCH */
+fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=18`)
+.then(r=>r.json()).then(d=>show("drama",d.results));
+
+fetch(`https://api.themoviedb.org/3/discover/tv?api_key=${API_KEY}`)
+.then(r=>r.json()).then(d=>show("series",d.results,"tv"));
+
+// SEARCH
 function searchMovie(q){
   if(q.length<2) return;
+
   fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${q}`)
   .then(r=>r.json())
   .then(d=>show("trending",d.results));
+}
+
+// PLAYER 🔥
+function openPlayer(id,type="movie"){
+  document.getElementById("modal").style.display="flex";
+
+  document.getElementById("player").src =
+    "https://vidsrc.xyz/embed/" + type + "/" + id + "?autoplay=1";
+}
+
+function playHero(){
+  openPlayer(heroId);
+}
+
+function closePlayer(){
+  document.getElementById("modal").style.display="none";
+  document.getElementById("player").src="";
 }
 
 </script>
