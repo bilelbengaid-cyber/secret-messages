@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Sign Up</title>
+
+<style>
+body{
+  font-family:sans-serif;
+  background:linear-gradient(135deg,#1e3c72,#2a5298);
+  margin:0;
+  text-align:center;
+}
+
+.form{
+  background:white;
+  width:450px;
+  margin:30px auto;
+  padding:25px;
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+h2{
+  font-size:20px;
+  margin-bottom:20px;
+}
+
+input,select{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+  border-radius:10px;
+  border:1px solid #ccc;
+}
+
+/* 🔥 Gender style */
+.gender{
+  display:flex;
+  justify-content:space-around;
+  margin:10px 0;
+}
+
+.gender label{
+  padding:10px 20px;
+  border-radius:20px;
+  background:#eee;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.gender input{
+  display:none;
+}
+
+.gender input:checked + label{
+  background:#007bff;
+  color:white;
+  transform:scale(1.1);
+}
+
+button{
+  width:100%;
+  padding:12px;
+  background:#007bff;
+  color:white;
+  border:none;
+  border-radius:10px;
+  margin-top:10px;
+  font-size:16px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="form">
+<h2>🎬 Watch the Best Movies & Series in High Quality</h2>
+
+<input id="nom" placeholder="First Name">
+<input id="prenom" placeholder="Last Name">
+<input id="username" placeholder="Username">
+<input id="age" type="number" placeholder="Age">
+
+<input id="email" type="email" placeholder="Email">
+<input id="phone" placeholder="Phone Number">
+
+<input id="password" type="password" placeholder="Password">
+
+<select id="pays">
+<option>Country</option>
+<option>Tunisia</option>
+<option>France</option>
+<option>Morocco</option>
+<option>Algeria</option>
+</select>
+
+<p>Gender:</p>
+
+<div class="gender">
+  <div>
+    <input type="radio" id="h" name="genre" value="Male">
+    <label for="h">👨 Male</label>
+  </div>
+
+  <div>
+    <input type="radio" id="f" name="genre" value="Female">
+    <label for="f">👩 Female</label>
+  </div>
+</div>
+
+<button onclick="send()">Sign Up 🚀</button>
+
+</div>
+
+<script>
+function send(){
+
+  let data = new URLSearchParams({
+    nom: document.getElementById("nom").value,
+    prenom: document.getElementById("prenom").value,
+    username: document.getElementById("username").value,
+    age: document.getElementById("age").value,
+    email: document.getElementById("email").value,
+    phone: document.getElementById("phone").value,
+    password: document.getElementById("password").value,
+    pays: document.getElementById("pays").value,
+    genre: document.querySelector('input[name="genre"]:checked')?.value || ""
+  });
+
+  fetch("https://script.google.com/macros/s/AKfycby4_Jwh7IVeJeF9Z3UzK0osQY-FaJsmZNpfXBwWN1A3rGSUcjag0xz6wD_uE3t9hfyK/exec", {
+    method: "POST",
+    body: data
+  })
+  .then(()=>{
+    alert("✅ Registered Successfully!");
+
+    // 🔥 يوديه مباشرة للموقع
+    window.location.href = "https://gervontaa.github.io/MovieHub/";
+  })
+  .catch(()=>{
+    alert("❌ Error sending data");
+  });
+
+}
+</script>
+
+</body>
+</html>
