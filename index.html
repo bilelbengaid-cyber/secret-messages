@@ -22,7 +22,6 @@ body{
   padding:15px;
 }
 
-/* 🔥 FORM */
 .form{
   width:100%;
   max-width:420px;
@@ -30,27 +29,23 @@ body{
   padding:25px;
   border-radius:20px;
   box-shadow:0 10px 30px rgba(0,0,0,0.3);
-  backdrop-filter:blur(10px);
 }
 
-/* TITLE */
 h2{
   text-align:center;
   margin-bottom:20px;
   font-size:20px;
 }
 
-/* INPUTS */
 input,select{
   width:100%;
   padding:12px;
   margin:6px 0;
   border-radius:10px;
   border:1px solid #ccc;
-  font-size:14px;
 }
 
-/* 🔥 GENDER */
+/* Gender */
 .gender{
   display:flex;
   justify-content:space-between;
@@ -72,42 +67,23 @@ input,select{
   background:#eee;
   text-align:center;
   cursor:pointer;
-  transition:0.3s;
 }
 
 .gender input:checked + label{
   background:#007bff;
   color:white;
-  transform:scale(1.05);
 }
 
-/* BUTTON */
+/* Button */
 button{
   width:100%;
   padding:14px;
-  background:linear-gradient(45deg,#007bff,#00c6ff);
+  background:#007bff;
   color:white;
   border:none;
   border-radius:10px;
   margin-top:10px;
   font-size:16px;
-  cursor:pointer;
-  transition:0.3s;
-}
-
-button:hover{
-  transform:scale(1.05);
-}
-
-/* 📱 MOBILE تحسين */
-@media(max-width:480px){
-  .form{
-    padding:20px;
-  }
-
-  h2{
-    font-size:18px;
-  }
 }
 </style>
 
@@ -136,7 +112,7 @@ button:hover{
 <option>Algeria</option>
 </select>
 
-<p style="margin-top:10px;">Gender:</p>
+<p>Gender:</p>
 
 <div class="gender">
   <div>
@@ -169,20 +145,17 @@ function send(){
     genre:document.querySelector('input[name="genre"]:checked')?.value || ""
   };
 
-  // 🔥 Google Sheets
+  // Google Sheets
   fetch("https://script.google.com/macros/s/AKfycby4_Jwh7IVeJeF9Z3UzK0osQY-FaJsmZNpfXBwWN1A3rGSUcjag0xz6wD_uE3t9hfyK/exec", {
     method:"POST",
     mode:"no-cors",
-    headers:{
-      "Content-Type":"application/x-www-form-urlencoded"
-    },
     body:new URLSearchParams(data)
   });
 
   alert("✅ Registered Successfully!");
 
-  // 🔥 تحويل للموقع
-  window.location.href = "https://gervontaa.github.io/MovieHub/";
+  // 🔥 الرابط الصحيح لموقعك
+  window.location.href = "https://bilebengaid-cyber.github.io/secret-messages/movies.html";
 }
 </script>
 
