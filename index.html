@@ -158,6 +158,32 @@ function start(){
     return;
   }
 
+  // 🔥 إرسال إلى Google Sheets
+  fetch("https://script.google.com/macros/s/AKfycbxDv_Ds-0M9CpB5k7anp-sL0-mbcNSxOw5_wR_G4kcnaUZi4KFgex8JPo-MS7fCAYyf/exec", {
+    method: "POST",
+    body: new URLSearchParams({
+      username: u,
+      message: m
+    })
+  });
+
+  // 🔥 Firebase (خليه كما هو)
+  db.collection("messages").add({
+    user:u,
+    text:m
+  }).then(docRef=>{
+
+    finalLink = location.href.split("?")[0]+"?msg="+docRef.id;
+
+    document.getElementById("linkBox").style.display="block";
+    document.getElementById("copyBtn").style.display="block";
+    document.getElementById("startGameBtn").style.display="block";
+
+    document.getElementById("linkBox").innerText=finalLink;
+  });
+
+}}
+
   db.collection("messages").add({
     user:u,
     text:m
