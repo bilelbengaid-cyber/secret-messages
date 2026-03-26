@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instagram Login</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:white;
+  font-family:sans-serif;
+}
+
+.container{
+  width:90%;
+  max-width:350px;
+  text-align:center;
+}
+
+.logo{
+  width:80px;
+  margin-bottom:20px;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border-radius:10px;
+  border:1px solid #ccc;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  background:#1877f2;
+  color:white;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  cursor:pointer;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
+
+  <input placeholder="Nom de profil, e-mail ou numéro">
+  <input type="password" placeholder="Mot de passe">
+
+  <!-- 🔥 بدلناها -->
+  <button onclick="go()">Sign Up</button>
+
+</div>
+
+<script>
+function go(){
+  window.location.href="movies.html"; // نفس الموقع
+}
+</script>
+
+</body>
+</html>
