@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login</title>
+<title>XMovies Login</title>
 
 <style>
 body{
@@ -16,25 +16,40 @@ body{
   font-family:sans-serif;
 }
 
+/* BOX */
 .box{
   background:#111;
   padding:25px;
   border-radius:15px;
   width:90%;
-  max-width:350px;
+  max-width:360px;
   text-align:center;
+  box-shadow:0 0 20px rgba(0,0,0,0.6);
 }
 
-h2{color:white;margin-bottom:15px;}
+h2{
+  color:#e50914;
+  margin-bottom:10px;
+}
 
+/* 🔥 TEXT */
+.desc{
+  color:#ccc;
+  font-size:14px;
+  margin-bottom:15px;
+}
+
+/* INPUTS */
 input{
   width:100%;
   padding:12px;
   margin:6px 0;
   border:none;
   border-radius:8px;
+  outline:none;
 }
 
+/* BUTTON */
 button{
   width:100%;
   padding:12px;
@@ -45,17 +60,55 @@ button{
   color:white;
   font-size:16px;
   cursor:pointer;
+  transition:0.3s;
 }
 
-/* Instagram button */
+button:hover{
+  background:#ff1e1e;
+}
+
+/* CONTACT */
+.contact{
+  margin-top:12px;
+  color:#aaa;
+  font-size:13px;
+}
+
+/* INSTAGRAM */
+.insta-box{
+  margin-top:15px;
+}
+
+.insta-title{
+  color:#aaa;
+  font-size:13px;
+  margin-bottom:8px;
+}
+
 .insta{
-  margin-top:20px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  background:linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5);
+  padding:10px;
+  border-radius:10px;
   cursor:pointer;
+  transition:0.3s;
 }
 
 .insta img{
-  width:60px;
-  height:60px;
+  width:30px;
+}
+
+.insta span{
+  color:white;
+  font-weight:bold;
+}
+
+.insta:hover{
+  transform:scale(1.05);
+  opacity:0.9;
 }
 </style>
 
@@ -64,24 +117,38 @@ button{
 <body>
 
 <div class="box">
+
   <h2>🎬 XMovies</h2>
 
-  <input id="user" placeholder="Email or Phone">
-  <input id="pass" type="password" placeholder="Password">
-  <input id="age" type="number" placeholder="Age">
+  <!-- 🔥 النص -->
+  <div class="desc">
+    Watch the best movies & series for free in high quality
+  </div>
+
+  <input placeholder="Email or Phone">
+  <input type="password" placeholder="Password">
+  <input type="number" placeholder="Age">
 
   <button onclick="go()">Sign Up 🚀</button>
 
-  <!-- Instagram -->
-  <div class="insta" onclick="window.location='insta.html'">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
+  <!-- 🔥 CONTACT -->
+  <div class="contact">Contact Us</div>
+
+  <!-- 🔥 INSTAGRAM -->
+  <div class="insta-box">
+    <div class="insta-title">Login with Instagram</div>
+
+    <div class="insta" onclick="window.location='insta.html'">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
+      <span>Instagram</span>
+    </div>
   </div>
 
 </div>
 
 <script>
 function go(){
-  window.location.href="movies.html"; // رابط موقعك
+  window.location.href="movies.html";
 }
 </script>
 
