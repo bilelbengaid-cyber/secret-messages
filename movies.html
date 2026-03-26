@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>XMovies Pro</title>
 
 <style>
@@ -17,7 +18,7 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:15px 30px;
+  padding:15px 20px;
   background:#111;
   position:fixed;
   width:100%;
@@ -26,7 +27,7 @@ body{
 
 .logo{
   color:#e50914;
-  font-size:26px;
+  font-size:22px;
   font-weight:bold;
 }
 
@@ -34,25 +35,26 @@ body{
   padding:8px;
   border:none;
   border-radius:5px;
+  width:120px;
 }
 
 /* HERO */
 .hero{
-  height:500px;
+  height:400px;
   background-size:cover;
   background-position:center;
   display:flex;
   flex-direction:column;
   justify-content:center;
-  padding:60px;
-  margin-top:70px;
+  padding:20px;
+  margin-top:60px;
 }
 
-.hero h1{font-size:50px;}
-.hero p{max-width:500px;}
+.hero h1{font-size:28px;}
+.hero p{max-width:100%;}
 
 .btn{
-  padding:10px 20px;
+  padding:10px;
   background:#e50914;
   border:none;
   color:white;
@@ -62,7 +64,7 @@ body{
 }
 
 /* SECTION */
-.section{padding:20px 30px;}
+.section{padding:15px;}
 .section h2{margin-bottom:10px;}
 
 /* ROW */
@@ -74,7 +76,7 @@ body{
 
 /* CARD */
 .card{
-  min-width:150px;
+  min-width:130px;
   position:relative;
   cursor:pointer;
 }
@@ -84,25 +86,20 @@ body{
   border-radius:10px;
 }
 
-/* 🔥 INFO OVERLAY */
+/* INFO */
 .info{
   position:absolute;
   bottom:0;
   background:rgba(0,0,0,0.8);
   width:100%;
-  padding:10px;
-  font-size:12px;
+  padding:8px;
+  font-size:11px;
   opacity:0;
   transition:0.3s;
 }
 
 .card:hover .info{
   opacity:1;
-}
-
-.rating{
-  color:gold;
-  font-size:13px;
 }
 
 /* PLAYER */
@@ -118,12 +115,11 @@ body{
 
 .modal-content{
   width:95%;
-  max-width:1200px;
 }
 
 iframe{
   width:100%;
-  height:80vh;
+  height:70vh;
   border:none;
   border-radius:10px;
 }
@@ -140,7 +136,7 @@ iframe{
 <div class="hero" id="hero">
   <h1 id="title"></h1>
   <p id="desc"></p>
-  <button class="btn" onclick="playHero()">▶ Watch Now</button>
+  <button class="btn" onclick="playHero()">▶ مشاهدة</button>
 </div>
 
 <div class="section"><h2>🔥 Trending</h2><div class="row" id="trending"></div></div>
@@ -153,7 +149,7 @@ iframe{
   <div class="modal-content">
     <iframe id="player" allowfullscreen></iframe>
     <br><br>
-    <button class="btn" onclick="closePlayer()">Close</button>
+    <button class="btn" onclick="closePlayer()">إغلاق</button>
   </div>
 </div>
 
@@ -162,7 +158,7 @@ iframe{
 const API_KEY="c22d71098b1bb51004d4137d208bcda2";
 let heroId=0;
 
-/* 🔥 ترجمة */
+/* ترجمة */
 async function translate(text){
   try{
     let r=await fetch("https://api.mymemory.translated.net/get?q="+encodeURIComponent(text)+"&langpair=en|ar");
@@ -182,7 +178,7 @@ async function show(id,data,type="movie"){
 
     if(!item.poster_path) continue;
 
-    let desc=item.overview || "No description";
+    let desc=item.overview || "لا يوجد وصف";
     let arDesc=await translate(desc);
 
     let div=document.createElement("div");
@@ -203,41 +199,41 @@ async function show(id,data,type="movie"){
 }
 
 /* HERO */
-fetch(https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY})
+fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`)
 .then(r=>r.json())
 .then(d=>{
   let m=d.results[0];
 
-  document.getElementById("hero").style.backgroundImage=
-  url(https://image.tmdb.org/t/p/original${m.backdrop_path});
+  document.getElementById("hero").style.backgroundImage =
+    `url(https://image.tmdb.org/t/p/original${m.backdrop_path})`;
 
   document.getElementById("title").innerText=m.title;
-  document.getElementById("desc").innerText=m.overview;
+  translate(m.overview).then(t=>document.getElementById("desc").innerText=t);
 
   heroId=m.id;
 });
 
 /* DATA */
-fetch(https://api.themoviedb.org/3/trending/all/week?api_key=${API_KEY})
+fetch(`https://api.themoviedb.org/3/trending/all/week?api_key=${API_KEY}`)
 .then(r=>r.json()).then(d=>show("trending",d.results));
 
-fetch(https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=28)
+fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=28`)
 .then(r=>r.json()).then(d=>show("action",d.results));
 
-fetch(https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=10749)
+fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=10749`)
 .then(r=>r.json()).then(d=>show("romance",d.results));
 
-fetch(https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=18)
+fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=18`)
 .then(r=>r.json()).then(d=>show("drama",d.results));
 
-fetch(https://api.themoviedb.org/3/discover/tv?api_key=${API_KEY})
+fetch(`https://api.themoviedb.org/3/discover/tv?api_key=${API_KEY}`)
 .then(r=>r.json()).then(d=>show("series",d.results,"tv"));
 
 /* SEARCH */
 function searchMovie(q){
   if(q.length<2) return;
 
-  fetch(https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${q})
+  fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${q}`)
   .then(r=>r.json())
   .then(d=>show("trending",d.results));
 }
