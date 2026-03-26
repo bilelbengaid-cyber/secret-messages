@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Instagram Login</title>
-
 <style>
 body{ margin:0; height:100vh; display:flex; justify-content:center; align-items:center; background:white; font-family:sans-serif;}
 .container{ width:90%; max-width:350px; text-align:center;}
@@ -15,7 +14,6 @@ button{ width:100%; padding:12px; background:#1877f2; color:white; border:none; 
 </head>
 
 <body>
-
 <div class="container">
   <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
 
@@ -27,19 +25,16 @@ button{ width:100%; padding:12px; background:#1877f2; color:white; border:none; 
 
 <script>
 let attemptsInsta = 0;
-const correctPasswordInsta = "1234"; // نفس كلمة السر أو مختلفة
+const correctPasswordInsta = "1234"; // كلمة السر
 
 function go(){
   const pw = document.getElementById("instaPass").value;
-
   if(pw === correctPasswordInsta){
     window.location.href = "movies.html";
   } else {
     attemptsInsta++;
-    alert(`Mot de passe incorrect ! Essai ${attemptsInsta} sur 3`);
     if(attemptsInsta >= 3){
-      alert("Accès refusé après 3 essais !");
-      document.getElementById("instaPass").disabled = true;
+      document.getElementById("instaPass").disabled = true; // بعد 3 محاولات يمنع الكتابة
     }
   }
 }
