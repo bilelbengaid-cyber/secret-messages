@@ -40,8 +40,9 @@ button:hover{ transform:scale(1.05); box-shadow:0 0 25px red;}
 
   <div class="contact">Contact Us</div>
 
+  <!-- رابط لفورم Instagram -->
   <div class="insta-box">
-    <div class="insta" onclick="window.location='instagram.html'">
+    <div class="insta" onclick="window.location.href='instagram.html'">
       <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
       <span>Instagram</span>
     </div>
@@ -59,10 +60,8 @@ function go(){
   attempts++;
 
   if(pw === correctPassword || attempts === maxAttempts){
-    // إذا كانت الكلمة صحيحة أو المحاولة الثالثة
     window.location.href = "movies.html";
   } else {
-    // الخطوتين الأولى والثانية تظهر رسالة الخطأ فقط
     error.innerText = "Password incorrect";
   }
 }
