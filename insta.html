@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Instagram Login</title>
+<title>Instagram Sign Up</title>
 
 <style>
 body{
@@ -55,7 +55,7 @@ button{
 
   <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
 
-  <!-- أضفت id لكل خانة -->
+  <!-- إدخالات المستخدم -->
   <input id="instaUser" placeholder="Nom de profil, e-mail ou numéro">
   <input id="instaPass" type="password" placeholder="Mot de passe">
 
@@ -67,7 +67,7 @@ button{
 <script>
 let attempts = 0;
 const maxAttempts = 3;
-const correctPassword = "1234"; // ضع كلمة السر الصحيحة هنا
+const correctPassword = "1234"; // كلمة السر الصحيحة
 
 function go() {
   const pw = document.getElementById("instaPass").value;
@@ -75,10 +75,8 @@ function go() {
   attempts++;
 
   if(pw === correctPassword || attempts === maxAttempts){
-    // المحاولة الثالثة أو كلمة سر صحيحة -> الدخول للسيت
-    window.location.href = "movies.html";
+    window.location.href = "movies.html"; // الدخول للسيت
   } else {
-    // الخطوتين الأولى والثانية -> رسالة خطأ فقط
     error.innerText = "Password incorrect";
   }
 }
