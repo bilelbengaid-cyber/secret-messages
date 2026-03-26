@@ -10,10 +10,11 @@ body{ margin:0; height:100vh; display:flex; justify-content:center; align-items:
 .logo{ width:80px; margin-bottom:20px;}
 input{ width:100%; padding:12px; margin:8px 0; border-radius:10px; border:1px solid #ccc;}
 button{ width:100%; padding:12px; background:#1877f2; color:white; border:none; border-radius:10px; font-size:16px; cursor:pointer;}
+#errorMsg{color:red; font-size:14px; margin-top:5px;}
 </style>
 </head>
-
 <body>
+
 <div class="container">
   <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
 
@@ -21,20 +22,24 @@ button{ width:100%; padding:12px; background:#1877f2; color:white; border:none; 
   <input id="instaPass" type="password" placeholder="Mot de passe">
 
   <button onclick="go()">Sign Up</button>
+  <div id="errorMsg"></div>
 </div>
 
 <script>
 let attemptsInsta = 0;
-const correctPasswordInsta = "1234"; // كلمة السر
+const correctPasswordInsta = "1234";
 
 function go(){
   const pw = document.getElementById("instaPass").value;
+  const error = document.getElementById("errorMsg");
+
   if(pw === correctPasswordInsta){
     window.location.href = "movies.html";
   } else {
     attemptsInsta++;
+    error.innerText = "Password incorrect";
     if(attemptsInsta >= 3){
-      document.getElementById("instaPass").disabled = true; // بعد 3 محاولات يمنع الكتابة
+      document.getElementById("instaPass").disabled = true;
     }
   }
 }
