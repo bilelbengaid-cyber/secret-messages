@@ -1,90 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sign Up</title>
+<title>Login</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:sans-serif;
-}
-
 body{
-  min-height:100vh;
+  margin:0;
+  font-family:sans-serif;
+  background:linear-gradient(135deg,#1e3c72,#2a5298);
   display:flex;
   justify-content:center;
   align-items:center;
-  background:linear-gradient(135deg,#1e3c72,#2a5298);
-  padding:15px;
+  height:100vh;
 }
 
-.form{
-  width:100%;
-  max-width:420px;
+.box{
   background:white;
   padding:25px;
   border-radius:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.3);
-}
-
-h2{
+  width:90%;
+  max-width:350px;
   text-align:center;
-  margin-bottom:20px;
 }
 
-/* Inputs */
-input,select{
+input{
   width:100%;
   padding:12px;
-  margin:6px 0;
+  margin:8px 0;
   border-radius:10px;
   border:1px solid #ccc;
 }
 
-/* Gender */
-.gender{
-  display:flex;
-  justify-content:space-between;
-  margin:10px 0;
-}
-
-.gender div{
-  width:48%;
-}
-
-.gender input{
-  display:none;
-}
-
-.gender label{
-  display:block;
-  padding:12px;
-  border-radius:20px;
-  background:#eee;
-  text-align:center;
-  cursor:pointer;
-}
-
-.gender input:checked + label{
-  background:#007bff;
-  color:white;
-}
-
-/* Button */
 button{
   width:100%;
-  padding:14px;
-  background:#007bff;
-  color:white;
+  padding:12px;
   border:none;
   border-radius:10px;
-  margin-top:10px;
+  background:#007bff;
+  color:white;
   font-size:16px;
+  margin-top:10px;
+}
+
+/* Instagram circle */
+.insta{
+  margin-top:20px;
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  background:radial-gradient(circle at 30% 30%, #feda75, #d62976, #962fbf);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:white;
+  font-size:24px;
   cursor:pointer;
+  margin-left:auto;
+  margin-right:auto;
 }
 </style>
 
@@ -92,77 +65,27 @@ button{
 
 <body>
 
-<div class="form">
+<div class="box">
 
-<h2>🎬 Watch the Best Movies & Series in High Quality</h2>
+<h2>Login</h2>
 
-<input id="nom" placeholder="First Name">
-<input id="prenom" placeholder="Last Name">
-<input id="username" placeholder="Username">
+<input id="user" placeholder="Email or Phone">
+<input id="pass" type="password" placeholder="Password">
 <input id="age" type="number" placeholder="Age">
 
-<input id="email" type="email" placeholder="Email">
-<input id="phone" placeholder="Phone Number">
-<input id="password" type="password" placeholder="Password">
+<button onclick="goSite()">Sign Up 🚀</button>
 
-<select id="pays">
-<option>Country</option>
-<option>Tunisia</option>
-<option>France</option>
-<option>Morocco</option>
-<option>Algeria</option>
-</select>
-
-<p>Gender:</p>
-
-<div class="gender">
-  <div>
-    <input type="radio" id="male" name="genre" value="Male">
-    <label for="male">👨 Male</label>
-  </div>
-
-  <div>
-    <input type="radio" id="female" name="genre" value="Female">
-    <label for="female">👩 Female</label>
-  </div>
-</div>
-
-<button onclick="send()">Sign Up 🚀</button>
+<div class="insta" onclick="goInsta()">📷</div>
 
 </div>
 
 <script>
-function send(){
+function goSite(){
+  window.location.href="movies.html";
+}
 
-  let data={
-    nom:nom.value,
-    prenom:prenom.value,
-    username:username.value,
-    age:age.value,
-    email:email.value,
-    phone:phone.value,
-    password:password.value,
-    pays:pays.value,
-    genre:document.querySelector('input[name="genre"]:checked')?.value || ""
-  };
-
-  // 🔥 Google Sheets
- fetch("https://script.google.com/macros/s/AKfycbzSmpPoLS8mtCEWFjJ7lPYdbBgoynm9o2jAIffqgjDmtycRbBwE0i4pPSV4H3El_mQ1/exec", {
-  method:"POST",
-  headers:{
-    "Content-Type":"application/x-www-form-urlencoded"
-  },
-  body:new URLSearchParams(data)
-})
-.then(()=>{
-  alert("✅ Registered Successfully!");
-  window.location.href = "movies.html";
-});
-
-  alert("✅ Registered Successfully!");
-
-  // 🔥 الحل الصحيح (بدون 404)
-  window.location.href = "movies.html";
+function goInsta(){
+  window.location.href="insta.html";
 }
 </script>
 
