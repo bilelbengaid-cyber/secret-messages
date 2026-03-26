@@ -6,168 +6,70 @@
 <title>XMovies</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:sans-serif;
-}
-
-body{
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:radial-gradient(circle at center,#111,#000);
-}
-
-/* 🔥 BOX */
-.box{
-  background:rgba(255,255,255,0.05);
-  backdrop-filter:blur(15px);
-  padding:30px;
-  border-radius:20px;
-  width:90%;
-  max-width:380px;
-  text-align:center;
-  box-shadow:0 0 40px rgba(255,0,0,0.3);
-}
-
-/* TITLE */
-h2{
-  color:#fff;
-  margin-bottom:10px;
-  font-size:24px;
-}
-
-/* 🔥 TEXT واضح */
-.desc{
-  color:#ddd;
-  font-size:14px;
-  margin-bottom:20px;
-  line-height:1.5;
-}
-
-/* INPUT */
-input{
-  width:100%;
-  padding:13px;
-  margin:8px 0;
-  border:none;
-  border-radius:10px;
-  background:#eee;
-  font-size:14px;
-}
-
-/* 🔥 BUTTON نفس عرض الخانات */
-button{
-  width:100%;
-  padding:13px;
-  margin-top:10px;
-  border:none;
-  border-radius:10px;
-  font-size:16px;
-  font-weight:bold;
-  cursor:pointer;
-  background:linear-gradient(45deg,#ff0000,#e50914);
-  color:white;
-  box-shadow:0 0 15px rgba(255,0,0,0.5);
-  transition:0.3s;
-}
-
-button:hover{
-  transform:scale(1.05);
-  box-shadow:0 0 25px red;
-}
-
-/* CONTACT */
-.contact{
-  margin-top:12px;
-  color:#aaa;
-  font-size:13px;
-}
-
-/* INSTAGRAM */
-.insta-box{
-  margin-top:15px;
-}
-
-.insta{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:10px;
-  background:linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5);
-  padding:12px;
-  border-radius:12px;
-  cursor:pointer;
-  transition:0.3s;
-}
-
-.insta img{
-  width:30px;
-}
-
-.insta span{
-  color:white;
-  font-weight:bold;
-}
-
-.insta:hover{
-  transform:scale(1.05);
-}
-
-/* 📱 تحسين الهاتف */
+*{ box-sizing:border-box; margin:0; padding:0; font-family:sans-serif;}
+body{ height:100vh; display:flex; justify-content:center; align-items:center; background:radial-gradient(circle at center,#111,#000);}
+.box{ background:rgba(255,255,255,0.05); backdrop-filter:blur(15px); padding:30px; border-radius:20px; width:90%; max-width:380px; text-align:center; box-shadow:0 0 40px rgba(255,0,0,0.3);}
+h2{ color:#fff; margin-bottom:10px; font-size:24px;}
+.desc{ color:#ddd; font-size:14px; margin-bottom:20px; line-height:1.5;}
+input{ width:100%; padding:13px; margin:8px 0; border:none; border-radius:10px; background:#eee; font-size:14px;}
+button{ width:100%; padding:13px; margin-top:10px; border:none; border-radius:10px; font-size:16px; font-weight:bold; cursor:pointer; background:linear-gradient(45deg,#ff0000,#e50914); color:white; box-shadow:0 0 15px rgba(255,0,0,0.5); transition:0.3s;}
+button:hover{ transform:scale(1.05); box-shadow:0 0 25px red;}
+.contact{ margin-top:12px; color:#aaa; font-size:13px;}
+.insta-box{ margin-top:15px;}
+.insta{ display:flex; justify-content:center; align-items:center; gap:10px; background:linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5); padding:12px; border-radius:12px; cursor:pointer; transition:0.3s;}
+.insta img{ width:30px;}
+.insta span{ color:white; font-weight:bold;}
+.insta:hover{ transform:scale(1.05);}
 @media(max-width:500px){
-  .box{
-    padding:20px;
-  }
-
-  h2{
-    font-size:20px;
-  }
-
-  .desc{
-    font-size:13px;
-  }
+  .box{ padding:20px;}
+  h2{ font-size:20px;}
+  .desc{ font-size:13px;}
 }
 </style>
-
 </head>
 
 <body>
 
 <div class="box">
-
   <h2>🎬 XMovies</h2>
-
-  <!-- 🔥 النص أصبح واضح واحترافي -->
   <div class="desc">
     Watch the best movies and series for free<br>
     in high quality with the best experience
   </div>
 
-  <input placeholder="Email or Phone">
-  <input type="password" placeholder="Password">
-  <input type="number" placeholder="Age">
+  <input id="email" placeholder="Email or Phone">
+  <input id="password" type="password" placeholder="Password">
+  <input id="age" type="number" placeholder="Age">
 
   <button onclick="go()">Sign Up 🚀</button>
 
   <div class="contact">Contact Us</div>
 
-  <!-- Instagram -->
   <div class="insta-box">
-    <div class="insta" onclick="window.location='insta.html'">
+    <div class="insta" onclick="window.location='instagram.html'">
       <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
       <span>Instagram</span>
     </div>
   </div>
-
 </div>
 
 <script>
+let attemptsX = 0;
+const correctPasswordX = "1234"; // ضع كلمة السر هنا
+
 function go(){
-  window.location.href="movies.html";
+  const pw = document.getElementById("password").value;
+
+  if(pw === correctPasswordX){
+    window.location.href = "movies.html";
+  } else {
+    attemptsX++;
+    alert(`Password incorrect! Attempt ${attemptsX} of 3`);
+    if(attemptsX >= 3){
+      alert("You have exceeded 3 attempts. Access denied.");
+      document.getElementById("password").disabled = true;
+    }
+  }
 }
 </script>
 
