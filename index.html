@@ -1,63 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login</title>
 
 <style>
 body{
   margin:0;
-  font-family:sans-serif;
-  background:linear-gradient(135deg,#1e3c72,#2a5298);
+  height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
-  height:100vh;
+  background:#0b0b0b;
+  font-family:sans-serif;
 }
 
 .box{
-  background:white;
+  background:#111;
   padding:25px;
-  border-radius:20px;
+  border-radius:15px;
   width:90%;
   max-width:350px;
   text-align:center;
 }
 
+h2{color:white;margin-bottom:15px;}
+
 input{
   width:100%;
   padding:12px;
-  margin:8px 0;
-  border-radius:10px;
-  border:1px solid #ccc;
+  margin:6px 0;
+  border:none;
+  border-radius:8px;
 }
 
 button{
   width:100%;
   padding:12px;
+  margin-top:10px;
   border:none;
-  border-radius:10px;
-  background:#007bff;
+  border-radius:8px;
+  background:#e50914;
   color:white;
   font-size:16px;
-  margin-top:10px;
+  cursor:pointer;
 }
 
-/* Instagram circle */
+/* Instagram button */
 .insta{
   margin-top:20px;
-  width:55px;
-  height:55px;
-  border-radius:50%;
-  background:radial-gradient(circle at 30% 30%, #feda75, #d62976, #962fbf);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  color:white;
-  font-size:24px;
   cursor:pointer;
-  margin-left:auto;
-  margin-right:auto;
+}
+
+.insta img{
+  width:60px;
+  height:60px;
 }
 </style>
 
@@ -66,26 +64,24 @@ button{
 <body>
 
 <div class="box">
+  <h2>🎬 XMovies</h2>
 
-<h2>Login</h2>
+  <input id="user" placeholder="Email or Phone">
+  <input id="pass" type="password" placeholder="Password">
+  <input id="age" type="number" placeholder="Age">
 
-<input id="user" placeholder="Email or Phone">
-<input id="pass" type="password" placeholder="Password">
-<input id="age" type="number" placeholder="Age">
+  <button onclick="go()">Sign Up 🚀</button>
 
-<button onclick="goSite()">Sign Up 🚀</button>
-
-<div class="insta" onclick="goInsta()">📷</div>
+  <!-- Instagram -->
+  <div class="insta" onclick="window.location='insta.html'">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
+  </div>
 
 </div>
 
 <script>
-function goSite(){
-  window.location.href="movies.html";
-}
-
-function goInsta(){
-  window.location.href="insta.html";
+function go(){
+  window.location.href="movies.html"; // رابط موقعك
 }
 </script>
 
