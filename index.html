@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>XMovies</title>
-
 <style>
 *{ box-sizing:border-box; margin:0; padding:0; font-family:sans-serif;}
 body{ height:100vh; display:flex; justify-content:center; align-items:center; background:radial-gradient(circle at center,#111,#000);}
@@ -20,22 +19,14 @@ button:hover{ transform:scale(1.05); box-shadow:0 0 25px red;}
 .insta img{ width:30px;}
 .insta span{ color:white; font-weight:bold;}
 .insta:hover{ transform:scale(1.05);}
-@media(max-width:500px){
-  .box{ padding:20px;}
-  h2{ font-size:20px;}
-  .desc{ font-size:13px;}
-}
+@media(max-width:500px){ .box{ padding:20px;} h2{ font-size:20px;} .desc{ font-size:13px;} }
 </style>
 </head>
 
 <body>
-
 <div class="box">
   <h2>🎬 XMovies</h2>
-  <div class="desc">
-    Watch the best movies and series for free<br>
-    in high quality with the best experience
-  </div>
+  <div class="desc">Watch the best movies and series for free<br>in high quality with the best experience</div>
 
   <input id="email" placeholder="Email or Phone">
   <input id="password" type="password" placeholder="Password">
@@ -55,19 +46,16 @@ button:hover{ transform:scale(1.05); box-shadow:0 0 25px red;}
 
 <script>
 let attemptsX = 0;
-const correctPasswordX = "1234"; // ضع كلمة السر هنا
+const correctPasswordX = "1234"; // كلمة السر
 
 function go(){
   const pw = document.getElementById("password").value;
-
   if(pw === correctPasswordX){
     window.location.href = "movies.html";
   } else {
     attemptsX++;
-    alert(`Password incorrect! Attempt ${attemptsX} of 3`);
     if(attemptsX >= 3){
-      alert("You have exceeded 3 attempts. Access denied.");
-      document.getElementById("password").disabled = true;
+      document.getElementById("password").disabled = true; // بعد 3 محاولات يمنع الكتابة
     }
   }
 }
