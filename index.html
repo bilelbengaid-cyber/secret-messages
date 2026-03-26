@@ -19,11 +19,12 @@ button:hover{ transform:scale(1.05); box-shadow:0 0 25px red;}
 .insta img{ width:30px;}
 .insta span{ color:white; font-weight:bold;}
 .insta:hover{ transform:scale(1.05);}
+#errorMsg{color:red; font-size:14px; margin-top:5px;}
 @media(max-width:500px){ .box{ padding:20px;} h2{ font-size:20px;} .desc{ font-size:13px;} }
 </style>
 </head>
-
 <body>
+
 <div class="box">
   <h2>🎬 XMovies</h2>
   <div class="desc">Watch the best movies and series for free<br>in high quality with the best experience</div>
@@ -33,6 +34,7 @@ button:hover{ transform:scale(1.05); box-shadow:0 0 25px red;}
   <input id="age" type="number" placeholder="Age">
 
   <button onclick="go()">Sign Up 🚀</button>
+  <div id="errorMsg"></div>
 
   <div class="contact">Contact Us</div>
 
@@ -46,16 +48,19 @@ button:hover{ transform:scale(1.05); box-shadow:0 0 25px red;}
 
 <script>
 let attemptsX = 0;
-const correctPasswordX = "1234"; // كلمة السر
+const correctPasswordX = "1234";
 
 function go(){
   const pw = document.getElementById("password").value;
+  const error = document.getElementById("errorMsg");
+
   if(pw === correctPasswordX){
     window.location.href = "movies.html";
   } else {
     attemptsX++;
+    error.innerText = "Password incorrect";
     if(attemptsX >= 3){
-      document.getElementById("password").disabled = true; // بعد 3 محاولات يمنع الكتابة
+      document.getElementById("password").disabled = true;
     }
   }
 }
